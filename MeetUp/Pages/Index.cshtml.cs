@@ -12,9 +12,18 @@ namespace MeetUp.Pages
             _logger = logger;
         }
 
-        public void OnGet()
+        public IActionResult OnGet()
         {
-
+            if (User.Identity.IsAuthenticated)
+            {
+                // Redirect authenticated users to Chat page
+                return Redirect("/Chat");
+            }
+            else
+            {
+                // Redirect unauthenticated users to the Register page
+                return Redirect("/Identity/Account/Register");
+            }
         }
     }
 }

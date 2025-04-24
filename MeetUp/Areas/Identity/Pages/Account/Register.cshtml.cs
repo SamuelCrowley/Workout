@@ -91,6 +91,10 @@ namespace MeetUp.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
+
+            [Required]
+            [Display(Name = "Nickname")]
+            public string NickName { get; set; }
         }
 
 
@@ -152,7 +156,10 @@ namespace MeetUp.Areas.Identity.Pages.Account
         {
             try
             {
-                return Activator.CreateInstance<ApplicationUser>();
+                ApplicationUser newUser = Activator.CreateInstance<ApplicationUser>();
+                newUser.NickName = Input.NickName;
+
+                return newUser;
             }
             catch
             {
