@@ -7,17 +7,17 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using MeetUp.Areas.Identity.User;
+using MeetUp.Data.User;
 
-namespace MeetUp.Areas.Identity.Pages.Account
+namespace MeetUp.Views.Account
 {
     public class LoginModel : PageModel
     {
-        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly SignInManager<ApplicationUserEO> _signInManager;
         private readonly ILogger<LoginModel> _logger;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<ApplicationUserEO> _userManager;
 
-        public LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger, UserManager<ApplicationUser> userManager)
+        public LoginModel(SignInManager<ApplicationUserEO> signInManager, ILogger<LoginModel> logger, UserManager<ApplicationUserEO> userManager)
         {
             _signInManager = signInManager;
             _logger = logger;
@@ -116,14 +116,17 @@ namespace MeetUp.Areas.Identity.Pages.Account
                     _logger.LogInformation("User logged in.");
 
                     // SEC 23-Apr-2025 - Add an option for the user to set a nickname on the login page
-                    ApplicationUser user = await _userManager.FindByEmailAsync(Input.Email);
+                    ApplicationUserEO user = await _userManager.FindByEmailAsync(Input.Email);
                     if (user != null && !string.IsNullOrWhiteSpace(Input.NickName))
                     {
-                        user.NickName = Input.NickName;
+                        if (string.IsNullOrEmpty(Input.NickName) == false)
+                        {
+                            user.NickName = Input.NickName;
+                        }
                         await _userManager.UpdateAsync(user);
                     }
 
-                    return LocalRedirect(returnUrl);
+                    return Redirect("/chat");
                 }
                 if (result.RequiresTwoFactor)
                 {

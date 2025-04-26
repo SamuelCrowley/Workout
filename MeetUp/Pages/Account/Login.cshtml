@@ -1,4 +1,5 @@
 ﻿@page
+@using MeetUp.Views.Account
 @model LoginModel
 
 @{
@@ -24,9 +25,9 @@
                     <span asp-validation-for="Input.Password" class="text-danger"></span>
                 </div>
                 <!-- SEC 25-Apr-2025 - Allow users to set their nickname prior to login -->
-                <div class="form-group">
-                    <label asp-for="Input.NickName"></label>
-                    <input asp-for="Input.NickName" class="form-control" />
+                <div class="form-floating mb-3">
+                    <input asp-for="Input.NickName" class="form-control" autocomplete="nickname" aria-required="true" placeholder="coolcat96" />
+                    <label asp-for="Input.NickName" class="form-label">NickName</label>
                     <span asp-validation-for="Input.NickName" class="text-danger"></span>
                 </div>
                 <div class="checkbox mb-3">

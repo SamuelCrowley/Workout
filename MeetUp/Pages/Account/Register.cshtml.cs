@@ -5,7 +5,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
-using MeetUp.Areas.Identity.User;
+using MeetUp.Data.User;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -13,21 +13,21 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 
-namespace MeetUp.Areas.Identity.Pages.Account
+namespace MeetUp.Pages.Account
 {
     public class RegisterModel : PageModel
     {
-        private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IUserStore<ApplicationUser> _userStore;
-        private readonly IUserEmailStore<ApplicationUser> _emailStore;
+        private readonly SignInManager<ApplicationUserEO> _signInManager;
+        private readonly UserManager<ApplicationUserEO> _userManager;
+        private readonly IUserStore<ApplicationUserEO> _userStore;
+        private readonly IUserEmailStore<ApplicationUserEO> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
 
         public RegisterModel(
-            UserManager<ApplicationUser> userManager,
-            IUserStore<ApplicationUser> userStore,
-            SignInManager<ApplicationUser> signInManager,
+            UserManager<ApplicationUserEO> userManager,
+            IUserStore<ApplicationUserEO> userStore,
+            SignInManager<ApplicationUserEO> signInManager,
             ILogger<RegisterModel> logger,
             IEmailSender emailSender)
         {
@@ -152,30 +152,30 @@ namespace MeetUp.Areas.Identity.Pages.Account
             return Page();
         }
 
-        private ApplicationUser CreateUser()
+        private ApplicationUserEO CreateUser()
         {
             try
             {
-                ApplicationUser newUser = Activator.CreateInstance<ApplicationUser>();
+                ApplicationUserEO newUser = Activator.CreateInstance<ApplicationUserEO>();
                 newUser.NickName = Input.NickName;
 
                 return newUser;
             }
             catch
             {
-                throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUser)}'. " +
-                    $"Ensure that '{nameof(ApplicationUser)}' is not an abstract class and has a parameterless constructor, or alternatively " +
+                throw new InvalidOperationException($"Can't create an instance of '{nameof(ApplicationUserEO)}'. " +
+                    $"Ensure that '{nameof(ApplicationUserEO)}' is not an abstract class and has a parameterless constructor, or alternatively " +
                     $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
             }
         }
 
-        private IUserEmailStore<ApplicationUser> GetEmailStore()
+        private IUserEmailStore<ApplicationUserEO> GetEmailStore()
         {
             if (!_userManager.SupportsUserEmail)
             {
                 throw new NotSupportedException("The default UI requires a user store with email support.");
             }
-            return (IUserEmailStore<ApplicationUser>)_userStore;
+            return (IUserEmailStore<ApplicationUserEO>)_userStore;
         }
     }
 }

@@ -2,19 +2,19 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using MeetUp.Areas.Identity.User;
+using MeetUp.Data.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace MeetUp.Areas.Identity.Pages.Account
+namespace MeetUp.Views.Account
 {
     public class LogoutModel : PageModel
     {
-        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly SignInManager<ApplicationUserEO> _signInManager;
         private readonly ILogger<LogoutModel> _logger;
 
-        public LogoutModel(SignInManager<ApplicationUser> signInManager, ILogger<LogoutModel> logger)
+        public LogoutModel(SignInManager<ApplicationUserEO> signInManager, ILogger<LogoutModel> logger)
         {
             _signInManager = signInManager;
             _logger = logger;

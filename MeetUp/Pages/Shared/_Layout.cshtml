@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/MeetUp.styles.css" asp-append-version="true" />
+    @RenderSection("Styles", required: false)
 </head>
 <body>
     <header>
@@ -25,18 +26,6 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="Identity" asp-page="/Register">Register</a>
                         </li>
-                        @if (!User.Identity.IsAuthenticated)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="Identity" asp-page="/Account/Login">Login</a>
-                            </li>
-                        }
-                        @if (User.Identity.IsAuthenticated)
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link" asp-area="Identity" asp-page="/Account/Logout">Logout</a>
-                            </li>
-                        }
                     </ul>
                 </div>
             </div>

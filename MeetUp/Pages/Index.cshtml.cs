@@ -1,20 +1,25 @@
+using MeetUp.Data.User;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace MeetUp.Pages
+namespace MeetUp.Views
 {
     public class IndexModel : PageModel
     {
         private readonly ILogger<IndexModel> _logger;
+        private readonly UserManager<ApplicationUserEO> _userManager;
 
-        public IndexModel(ILogger<IndexModel> logger)
+        public IndexModel(ILogger<IndexModel> logger, UserManager<ApplicationUserEO> userManager)
         {
             _logger = logger;
+            _userManager = userManager;
         }
 
-        public IActionResult OnGet()
+        public async Task<IActionResult> OnGet()
         {
-            if (User.Identity.IsAuthenticated)
+            ApplicationUserEO? user = await _userManager.GetUserAsync(User);
+            if (user != null)
             {
                 // Redirect authenticated users to Chat page
                 return Redirect("/Chat");
@@ -22,7 +27,7 @@ namespace MeetUp.Pages
             else
             {
                 // Redirect unauthenticated users to the Register page
-                return Redirect("/Identity/Account/Register");
+                return Redirect("/Account/Login");
             }
         }
     }

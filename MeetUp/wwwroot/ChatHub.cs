@@ -1,5 +1,5 @@
-﻿using MeetUp.Areas.Identity.User;
-using MeetUp.Services;
+﻿using MeetUp.Areas.Application.Services;
+using MeetUp.Data.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 
@@ -8,9 +8,9 @@ namespace MeetUp.wwwroot
     internal class ChatHub : Hub
     {
         private readonly ChatHubStateService _stateService;
-        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly UserManager<ApplicationUserEO> _userManager;
 
-        public ChatHub(UserManager<ApplicationUser> userManager, ChatHubStateService stateService)
+        public ChatHub(UserManager<ApplicationUserEO> userManager, ChatHubStateService stateService)
         {
             _userManager = userManager;
             _stateService = stateService;
@@ -18,7 +18,7 @@ namespace MeetUp.wwwroot
 
         public async Task SendMessage(string message)
         {
-            ApplicationUser? user = await _userManager.GetUserAsync(Context.User);
+            ApplicationUserEO? user = await _userManager.GetUserAsync(Context.User);
             string senderName = GetUserName(user);
             string colour = _stateService.GetUserColour(Context.ConnectionId);
 
@@ -27,7 +27,7 @@ namespace MeetUp.wwwroot
 
         public override async Task OnConnectedAsync()
         {
-            ApplicationUser? user = await _userManager.GetUserAsync(Context.User);
+            ApplicationUserEO? user = await _userManager.GetUserAsync(Context.User);
             string joinerName = GetUserName(user);
 
             _stateService.AddUser(Context.ConnectionId);
@@ -38,7 +38,7 @@ namespace MeetUp.wwwroot
 
         public override async Task OnDisconnectedAsync(Exception? exception)
         {
-            ApplicationUser? user = await _userManager.GetUserAsync(Context.User);
+            ApplicationUserEO? user = await _userManager.GetUserAsync(Context.User);
             string leaverName = GetUserName(user);
 
             _stateService.RemoveUser(Context.ConnectionId);
@@ -47,7 +47,7 @@ namespace MeetUp.wwwroot
             await base.OnDisconnectedAsync(exception);
         }
 
-        private string GetUserName(ApplicationUser user)
+        private string GetUserName(ApplicationUserEO user)
         {
             string userDisplayName = "Anonymous";
 

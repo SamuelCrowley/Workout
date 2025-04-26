@@ -4,6 +4,7 @@ using MeetUp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MeetUp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250426183655_RemoveWorkoutThisWeek")]
+    partial class RemoveWorkoutThisWeek
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,7 +42,7 @@ namespace MeetUp.Migrations
 
                     b.HasIndex("ParentRef");
 
-                    b.ToTable("Gym_Exercises", (string)null);
+                    b.ToTable("GymExerciseEO", (string)null);
                 });
 
             modelBuilder.Entity("MeetUp.Data.Gym.GymRepetitionEO", b =>
@@ -65,7 +68,7 @@ namespace MeetUp.Migrations
 
                     b.HasIndex("ParentRef");
 
-                    b.ToTable("Gym_Repetitions", (string)null);
+                    b.ToTable("GymRepetition", (string)null);
                 });
 
             modelBuilder.Entity("MeetUp.Data.Gym.GymSessionEO", b =>
@@ -89,7 +92,7 @@ namespace MeetUp.Migrations
 
                     b.HasIndex("ParentRef");
 
-                    b.ToTable("Gym_Sessions", (string)null);
+                    b.ToTable("GymSession", (string)null);
                 });
 
             modelBuilder.Entity("MeetUp.Data.Gym.GymSetEO", b =>
@@ -109,7 +112,7 @@ namespace MeetUp.Migrations
 
                     b.HasIndex("ParentRef");
 
-                    b.ToTable("Gym_Sets", (string)null);
+                    b.ToTable("GymSetEO", (string)null);
                 });
 
             modelBuilder.Entity("MeetUp.Data.Gym.GymUserEO", b =>
@@ -130,7 +133,7 @@ namespace MeetUp.Migrations
                     b.HasIndex("ParentRef")
                         .IsUnique();
 
-                    b.ToTable("Gym_Users", (string)null);
+                    b.ToTable("GymUsers", (string)null);
                 });
 
             modelBuilder.Entity("MeetUp.Data.User.ApplicationUserEO", b =>

@@ -4,6 +4,7 @@ using MeetUp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MeetUp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250426171821_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,15 +34,14 @@ namespace MeetUp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("ParentRefType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("ParentRefType")
+                        .HasColumnType("int");
 
                     b.HasKey("ClassRef");
 
                     b.HasIndex("ParentRef");
 
-                    b.ToTable("Gym_Exercises", (string)null);
+                    b.ToTable("GymExerciseEO");
                 });
 
             modelBuilder.Entity("MeetUp.Data.Gym.GymRepetitionEO", b =>
@@ -54,9 +56,8 @@ namespace MeetUp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("ParentRefType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("ParentRefType")
+                        .HasColumnType("int");
 
                     b.Property<int>("Weight")
                         .HasColumnType("int");
@@ -65,7 +66,7 @@ namespace MeetUp.Migrations
 
                     b.HasIndex("ParentRef");
 
-                    b.ToTable("Gym_Repetitions", (string)null);
+                    b.ToTable("GymRepetitionEO");
                 });
 
             modelBuilder.Entity("MeetUp.Data.Gym.GymSessionEO", b =>
@@ -81,15 +82,14 @@ namespace MeetUp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("ParentRefType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("ParentRefType")
+                        .HasColumnType("int");
 
                     b.HasKey("ClassRef");
 
                     b.HasIndex("ParentRef");
 
-                    b.ToTable("Gym_Sessions", (string)null);
+                    b.ToTable("GymSessionEO");
                 });
 
             modelBuilder.Entity("MeetUp.Data.Gym.GymSetEO", b =>
@@ -101,15 +101,14 @@ namespace MeetUp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("ParentRefType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("ParentRefType")
+                        .HasColumnType("int");
 
                     b.HasKey("ClassRef");
 
                     b.HasIndex("ParentRef");
 
-                    b.ToTable("Gym_Sets", (string)null);
+                    b.ToTable("GymSetEO");
                 });
 
             modelBuilder.Entity("MeetUp.Data.Gym.GymUserEO", b =>
@@ -121,16 +120,18 @@ namespace MeetUp.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("ParentRefType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("ParentRefType")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WorkoutsThisWeek")
+                        .HasColumnType("int");
 
                     b.HasKey("ClassRef");
 
                     b.HasIndex("ParentRef")
                         .IsUnique();
 
-                    b.ToTable("Gym_Users", (string)null);
+                    b.ToTable("GymUsers");
                 });
 
             modelBuilder.Entity("MeetUp.Data.User.ApplicationUserEO", b =>

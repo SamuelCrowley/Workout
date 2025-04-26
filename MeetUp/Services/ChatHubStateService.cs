@@ -1,6 +1,6 @@
 ﻿using System.Collections.Concurrent;
 
-namespace MeetUp.Services
+namespace MeetUp.Areas.Application.Services
 {
     public class ChatHubStateService
     {

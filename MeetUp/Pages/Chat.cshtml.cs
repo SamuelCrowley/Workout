@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace MeetUp.Pages
+namespace MeetUp.Views
 {
     public class ChatModel : PageModel
     {

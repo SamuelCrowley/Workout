@@ -30,6 +30,7 @@ namespace MeetUp.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    NickName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -156,6 +157,105 @@ namespace MeetUp.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "GymUsers",
+                columns: table => new
+                {
+                    ClassRef = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ParentRefType = table.Column<int>(type: "int", nullable: false),
+                    WorkoutsThisWeek = table.Column<int>(type: "int", nullable: false),
+                    ParentRef = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GymUsers", x => x.ClassRef);
+                    table.ForeignKey(
+                        name: "FK_GymUsers_AspNetUsers_ParentRef",
+                        column: x => x.ParentRef,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GymSessionEO",
+                columns: table => new
+                {
+                    ClassRef = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ParentRefType = table.Column<int>(type: "int", nullable: false),
+                    GymSessionType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ParentRef = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GymSessionEO", x => x.ClassRef);
+                    table.ForeignKey(
+                        name: "FK_GymSessionEO_GymUsers_ParentRef",
+                        column: x => x.ParentRef,
+                        principalTable: "GymUsers",
+                        principalColumn: "ClassRef",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GymExerciseEO",
+                columns: table => new
+                {
+                    ClassRef = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ParentRefType = table.Column<int>(type: "int", nullable: false),
+                    ParentRef = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GymExerciseEO", x => x.ClassRef);
+                    table.ForeignKey(
+                        name: "FK_GymExerciseEO_GymSessionEO_ParentRef",
+                        column: x => x.ParentRef,
+                        principalTable: "GymSessionEO",
+                        principalColumn: "ClassRef",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GymSetEO",
+                columns: table => new
+                {
+                    ClassRef = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ParentRefType = table.Column<int>(type: "int", nullable: false),
+                    ParentRef = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GymSetEO", x => x.ClassRef);
+                    table.ForeignKey(
+                        name: "FK_GymSetEO_GymExerciseEO_ParentRef",
+                        column: x => x.ParentRef,
+                        principalTable: "GymExerciseEO",
+                        principalColumn: "ClassRef",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "GymRepetitionEO",
+                columns: table => new
+                {
+                    ClassRef = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ParentRefType = table.Column<int>(type: "int", nullable: false),
+                    Weight = table.Column<int>(type: "int", nullable: false),
+                    Difficulty = table.Column<int>(type: "int", nullable: false),
+                    ParentRef = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GymRepetitionEO", x => x.ClassRef);
+                    table.ForeignKey(
+                        name: "FK_GymRepetitionEO_GymSetEO_ParentRef",
+                        column: x => x.ParentRef,
+                        principalTable: "GymSetEO",
+                        principalColumn: "ClassRef",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -194,6 +294,32 @@ namespace MeetUp.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GymExerciseEO_ParentRef",
+                table: "GymExerciseEO",
+                column: "ParentRef");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GymRepetitionEO_ParentRef",
+                table: "GymRepetitionEO",
+                column: "ParentRef");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GymSessionEO_ParentRef",
+                table: "GymSessionEO",
+                column: "ParentRef");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GymSetEO_ParentRef",
+                table: "GymSetEO",
+                column: "ParentRef");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GymUsers_ParentRef",
+                table: "GymUsers",
+                column: "ParentRef",
+                unique: true);
         }
 
         /// <inheritdoc />
@@ -215,7 +341,22 @@ namespace MeetUp.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "GymRepetitionEO");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "GymSetEO");
+
+            migrationBuilder.DropTable(
+                name: "GymExerciseEO");
+
+            migrationBuilder.DropTable(
+                name: "GymSessionEO");
+
+            migrationBuilder.DropTable(
+                name: "GymUsers");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

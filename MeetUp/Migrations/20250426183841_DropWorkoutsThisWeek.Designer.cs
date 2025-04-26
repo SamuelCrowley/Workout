@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MeetUp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250423194000_AddNicknameToUser")]
-    partial class AddNicknameToUser
+    [Migration("20250426183841_DropWorkoutsThisWeek")]
+    partial class DropWorkoutsThisWeek
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,118 @@ namespace MeetUp.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("MeetUp.Areas.Identity.User.ApplicationUser", b =>
+            modelBuilder.Entity("MeetUp.Data.Gym.GymExerciseEO", b =>
+                {
+                    b.Property<string>("ClassRef")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ParentRef")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ParentRefType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ClassRef");
+
+                    b.HasIndex("ParentRef");
+
+                    b.ToTable("Gym_Exercises", (string)null);
+                });
+
+            modelBuilder.Entity("MeetUp.Data.Gym.GymRepetitionEO", b =>
+                {
+                    b.Property<string>("ClassRef")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("Difficulty")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ParentRef")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ParentRefType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Weight")
+                        .HasColumnType("int");
+
+                    b.HasKey("ClassRef");
+
+                    b.HasIndex("ParentRef");
+
+                    b.ToTable("Gym_Repetitions", (string)null);
+                });
+
+            modelBuilder.Entity("MeetUp.Data.Gym.GymSessionEO", b =>
+                {
+                    b.Property<string>("ClassRef")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("GymSessionType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ParentRef")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ParentRefType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ClassRef");
+
+                    b.HasIndex("ParentRef");
+
+                    b.ToTable("Gym_Sessions", (string)null);
+                });
+
+            modelBuilder.Entity("MeetUp.Data.Gym.GymSetEO", b =>
+                {
+                    b.Property<string>("ClassRef")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ParentRef")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ParentRefType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ClassRef");
+
+                    b.HasIndex("ParentRef");
+
+                    b.ToTable("Gym_Sets", (string)null);
+                });
+
+            modelBuilder.Entity("MeetUp.Data.Gym.GymUserEO", b =>
+                {
+                    b.Property<string>("ClassRef")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ParentRef")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("ParentRefType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ClassRef");
+
+                    b.HasIndex("ParentRef")
+                        .IsUnique();
+
+                    b.ToTable("Gym_Users", (string)null);
+                });
+
+            modelBuilder.Entity("MeetUp.Data.User.ApplicationUserEO", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -231,6 +342,61 @@ namespace MeetUp.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("MeetUp.Data.Gym.GymExerciseEO", b =>
+                {
+                    b.HasOne("MeetUp.Data.Gym.GymSessionEO", "GymSessionEO")
+                        .WithMany("GymExerciseEOs")
+                        .HasForeignKey("ParentRef")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("GymSessionEO");
+                });
+
+            modelBuilder.Entity("MeetUp.Data.Gym.GymRepetitionEO", b =>
+                {
+                    b.HasOne("MeetUp.Data.Gym.GymSetEO", "GymSetEO")
+                        .WithMany("GymRepetitionEOs")
+                        .HasForeignKey("ParentRef")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("GymSetEO");
+                });
+
+            modelBuilder.Entity("MeetUp.Data.Gym.GymSessionEO", b =>
+                {
+                    b.HasOne("MeetUp.Data.Gym.GymUserEO", "GymUserEO")
+                        .WithMany("GymSessionEOs")
+                        .HasForeignKey("ParentRef")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("GymUserEO");
+                });
+
+            modelBuilder.Entity("MeetUp.Data.Gym.GymSetEO", b =>
+                {
+                    b.HasOne("MeetUp.Data.Gym.GymExerciseEO", "GymExerciseEO")
+                        .WithMany("GymSetEOs")
+                        .HasForeignKey("ParentRef")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("GymExerciseEO");
+                });
+
+            modelBuilder.Entity("MeetUp.Data.Gym.GymUserEO", b =>
+                {
+                    b.HasOne("MeetUp.Data.User.ApplicationUserEO", "ApplicationUserEO")
+                        .WithOne("GymUserEO")
+                        .HasForeignKey("MeetUp.Data.Gym.GymUserEO", "ParentRef")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ApplicationUserEO");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -242,7 +408,7 @@ namespace MeetUp.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("MeetUp.Areas.Identity.User.ApplicationUser", null)
+                    b.HasOne("MeetUp.Data.User.ApplicationUserEO", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -251,7 +417,7 @@ namespace MeetUp.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("MeetUp.Areas.Identity.User.ApplicationUser", null)
+                    b.HasOne("MeetUp.Data.User.ApplicationUserEO", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -266,7 +432,7 @@ namespace MeetUp.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MeetUp.Areas.Identity.User.ApplicationUser", null)
+                    b.HasOne("MeetUp.Data.User.ApplicationUserEO", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -275,10 +441,36 @@ namespace MeetUp.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("MeetUp.Areas.Identity.User.ApplicationUser", null)
+                    b.HasOne("MeetUp.Data.User.ApplicationUserEO", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MeetUp.Data.Gym.GymExerciseEO", b =>
+                {
+                    b.Navigation("GymSetEOs");
+                });
+
+            modelBuilder.Entity("MeetUp.Data.Gym.GymSessionEO", b =>
+                {
+                    b.Navigation("GymExerciseEOs");
+                });
+
+            modelBuilder.Entity("MeetUp.Data.Gym.GymSetEO", b =>
+                {
+                    b.Navigation("GymRepetitionEOs");
+                });
+
+            modelBuilder.Entity("MeetUp.Data.Gym.GymUserEO", b =>
+                {
+                    b.Navigation("GymSessionEOs");
+                });
+
+            modelBuilder.Entity("MeetUp.Data.User.ApplicationUserEO", b =>
+                {
+                    b.Navigation("GymUserEO")
                         .IsRequired();
                 });
 #pragma warning restore 612, 618
