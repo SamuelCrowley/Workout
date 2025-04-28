@@ -414,7 +414,7 @@
         }
 
         const connection = new signalR.HubConnectionBuilder()
-            .withUrl("/gymHub", {
+            .withUrl("/gymChatHub", {
                 skipNegotiation: true,
                 transport: signalR.HttpTransportType.WebSockets
             })

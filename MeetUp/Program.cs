@@ -7,6 +7,8 @@ using MeetUp.Areas.Application.Services;
 using Microsoft.AspNetCore.Identity;
 using MeetUp.Data.User;
 using MeetUp.Filters;
+using Microsoft.AspNetCore.SignalR; // Important
+using Microsoft.Azure.SignalR;     // Important
 
 namespace MeetUp
 {
@@ -19,53 +21,64 @@ namespace MeetUp
             string connectionString = builder.Configuration.GetConnectionString("ApplicationDbContextConnection")
                 ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");
 
-            _ = builder.Services.Configure<ThemeSettings>(builder.Configuration.GetSection("ThemeSettings"));
-            _ = builder.Services.AddSingleton(provider =>
+            builder.Services.Configure<ThemeSettings>(builder.Configuration.GetSection("ThemeSettings"));
+
+            builder.Services.AddSingleton(provider =>
             {
                 ThemeSettings themeSettings = provider.GetRequiredService<IOptions<ThemeSettings>>().Value;
                 return new ChatHubStateService(themeSettings.ChatColours);
             });
 
-            _ = builder.Services.AddControllers(options =>
+            builder.Services.AddControllers(options =>
             {
                 options.Filters.Add<ExceptionFilter>();
             });
 
-            _ = builder.Services.AddDbContext<ApplicationDbContext>(x => x.UseSqlServer(connectionString));
+            builder.Services.AddDbContext<ApplicationDbContext>(x => x.UseSqlServer(connectionString));
 
-            _ = builder.Services.AddDefaultIdentity<ApplicationUserEO>(options => options.SignIn.RequireConfirmedAccount = false)
-                                .AddEntityFrameworkStores<ApplicationDbContext>()
-                                .AddUserManager<UserManager<ApplicationUserEO>>();
+            builder.Services.AddDefaultIdentity<ApplicationUserEO>(options => options.SignIn.RequireConfirmedAccount = false)
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddUserManager<UserManager<ApplicationUserEO>>();
 
-            _ = builder.Services.AddRazorPages();
+            builder.Services.AddRazorPages();
 
-            _ = builder.Services.AddSignalR();
+            if (builder.Environment.IsDevelopment())
+            {
+                builder.Services.AddSignalR();
+            }
+            else
+            {
+                builder.Services.AddSignalR();
+                //builder.Services.AddSignalR().AddAzureSignalR(); SEC 25-Apr-2025 - If scaling was involved
+            }
 
             WebApplication app = builder.Build();
 
-            _ = app.MapControllers();
+            app.MapControllers();
+
             if (!app.Environment.IsDevelopment())
             {
-                _ = app.UseExceptionHandler("/Error");
-                _ = app.UseHsts();
+                app.UseExceptionHandler("/Error");
+                app.UseHsts();
             }
             else
             {
                 app.UseDeveloperExceptionPage();
                 app.MapGet("/debug/routes", () =>
-                            string.Join("\n", app.Services.GetRequiredService<IEnumerable<EndpointDataSource>>()
-                                .SelectMany(source => source.Endpoints)
-                                .OfType<RouteEndpoint>()
-                                .Select(e => $"{e.RoutePattern.RawText}")));
+                    string.Join("\n", app.Services.GetRequiredService<IEnumerable<EndpointDataSource>>()
+                        .SelectMany(source => source.Endpoints)
+                        .OfType<RouteEndpoint>()
+                        .Select(e => $"{e.RoutePattern.RawText}")));
             }
-            
-            _ = app.UseHttpsRedirection();
-            _ = app.UseStaticFiles();
-            _ = app.UseRouting();
-            _ = app.UseAuthorization();
 
-            _ = app.MapRazorPages();
-            _ = app.MapHub<ChatHub>("/gymHub");
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseRouting();
+            app.UseAuthorization();
+
+            app.MapRazorPages();
+
+            app.MapHub<ChatHub>("/gymChatHub");
 
             app.Run();
         }
