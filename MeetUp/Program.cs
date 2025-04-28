@@ -65,7 +65,7 @@ namespace MeetUp
             _ = app.UseAuthorization();
 
             _ = app.MapRazorPages();
-            _ = app.MapHub<ChatHub>("/chatHub");
+            _ = app.MapHub<ChatHub>("/gymHub");
 
             app.Run();
         }
