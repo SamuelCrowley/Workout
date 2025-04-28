@@ -1,0 +1,18 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/MeetUp/config/applicationhost.config
+/.vs/MeetUp/DesignTimeBuild/.dtbcache.v2
+/.vs/MeetUp/FileContentIndex/69d51398-c0ef-4af7-814f-fd90ad8fed29.vsidx
+/.vs/MeetUp/FileContentIndex/969246e6-a334-42f9-a4ce-b4ab57e27530.vsidx
+/.vs/MeetUp/FileContentIndex/a1b908df-12a8-4874-9e4e-c159eafcdebf.vsidx
+/.vs/MeetUp/FileContentIndex/b0e7f1f9-bb1a-4b10-9a16-544a80bc11be.vsidx
+/.vs/MeetUp/FileContentIndex/e3adc270-de4a-4cf7-b6a6-b836dd04fff5.vsidx
+/.vs/MeetUp/v17/.futdcache.v2
+/.vs/MeetUp/v17/.suo
+/.vs/MeetUp/v17/DocumentLayout.json
+/.vs/MeetUp/v17/HierarchyCache.v1.txt
+/.vs/ProjectEvaluation/meetup.metadata.v7.bin
+/.vs/ProjectEvaluation/meetup.projects.v7.bin
+/.vs/MeetUp/FileContentIndex/bc1d21c7-01c1-47d8-a026-f6b844be3c87.vsidx

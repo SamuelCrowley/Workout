@@ -12,6 +12,13 @@ namespace MeetUp.Data.Gym
         }
         public ICollection<GymExerciseEO> GymExerciseEOs { get; set; }
 
-        public string GymSessionType { get; set; } = "Chest"; //Update later of course, just testing
+        public string GymSessionType { get; set; } 
+        public DateTime StartTime { get; set; }
+        public DateTime EndTime { get; set; }
+
+        public GymSessionEO() : base()
+        {
+            EndTime = DateTime.MaxValue;
+        }
     }
 }

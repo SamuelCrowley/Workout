@@ -12,6 +12,10 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUserEO>
 {
     public DbSet<GymUserEO> GymUsers { get; set; }
     public DbSet<GymSessionEO> GymSessions { get; set; }
+    public DbSet<GymExerciseEO> GymExercises { get; set; }
+    public DbSet<GymSetEO> GymSets { get; set; }
+    public DbSet<GymRepetitionEO> GymRepetitions { get; set; }
+    
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
 
@@ -36,6 +40,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUserEO>
         base.OnModelCreating(builder);
 
         builder.Entity<GymUserEO>().ToTable(EntityObjectType.GymUserEO.GetDisplayName()).HasKey(x => x. ClassRef);
+        //builder.Entity<GymUserEO>().Property(x => x.ClassRef).HasColumnName(EntityObjectType.GymUserEO.GetDisplayName() + "ClassRef"); 
 
         builder.Entity<GymUserEO>()
             .HasOne(x => x.ApplicationUserEO) 
@@ -44,6 +49,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUserEO>
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<GymSessionEO>().ToTable(EntityObjectType.GymSessionEO.GetDisplayName()).HasKey(x => x.ClassRef);
+        //builder.Entity<GymSessionEO>().Property(x => x.ClassRef).HasColumnName(EntityObjectType.GymSessionEO.GetDisplayName() + "ClassRef");
 
         builder.Entity<GymSessionEO>()
             .HasOne(x => x.GymUserEO)  
@@ -52,6 +58,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUserEO>
             .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<GymExerciseEO>().ToTable(EntityObjectType.GymExerciseEO.GetDisplayName()).HasKey(x => x.ClassRef);
+        //builder.Entity<GymExerciseEO>().Property(x => x.ClassRef).HasColumnName(EntityObjectType.GymExerciseEO.GetDisplayName() + "ClassRef");
 
         builder.Entity<GymExerciseEO>()
            .HasOne(x => x.GymSessionEO)  
@@ -60,6 +67,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUserEO>
            .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<GymSetEO>().ToTable(EntityObjectType.GymSetEO.GetDisplayName()).HasKey(x => x.ClassRef);
+        //builder.Entity<GymSetEO>().Property(x => x.ClassRef).HasColumnName(EntityObjectType.GymSetEO.GetDisplayName() + "ClassRef");
 
         builder.Entity<GymSetEO>()
            .HasOne(x => x.GymExerciseEO)
@@ -68,6 +76,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUserEO>
            .OnDelete(DeleteBehavior.Cascade);
 
         builder.Entity<GymRepetitionEO>().ToTable(EntityObjectType.GymRepetitionEO.GetDisplayName()).HasKey(x => x.ClassRef);
+        //builder.Entity<GymRepetitionEO>().Property(x => x.ClassRef).HasColumnName(EntityObjectType.GymRepetitionEO.GetDisplayName() + "ClassRef");
 
         builder.Entity<GymRepetitionEO>()
            .HasOne(x => x.GymSetEO)

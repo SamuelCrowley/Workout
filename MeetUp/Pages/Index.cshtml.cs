@@ -21,8 +21,8 @@ namespace MeetUp.Views
             ApplicationUserEO? user = await _userManager.GetUserAsync(User);
             if (user != null)
             {
-                // Redirect authenticated users to Chat page
-                return Redirect("/Chat");
+                // Redirect authenticated users to Gym page
+                return Redirect("/gym");
             }
             else
             {

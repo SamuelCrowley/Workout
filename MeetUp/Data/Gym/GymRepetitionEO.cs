@@ -11,7 +11,9 @@ namespace MeetUp.Data.Gym
         }
         public GymSetEO GymSetEO { get; set; }
 
-        public int Weight { get; set; }
+        public float Weight { get; set; }
         public RepetitionDifficulty Difficulty { get; set; }
+
+        public int Order { get; set; }
     }
 }

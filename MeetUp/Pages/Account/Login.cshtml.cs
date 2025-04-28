@@ -126,7 +126,7 @@ namespace MeetUp.Views.Account
                         await _userManager.UpdateAsync(user);
                     }
 
-                    return Redirect("/chat");
+                    return Redirect("/gym");
                 }
                 if (result.RequiresTwoFactor)
                 {

@@ -8,8 +8,10 @@ namespace MeetUp.Data.Gym
         public ICollection<GymRepetitionEO> GymRepetitionEOs { get; set; }
         public override EntityObjectType ParentRefEOType()
         {
-            return EntityObjectType.GymSetEO;
+            return EntityObjectType.GymExerciseEO;
         }
         public GymExerciseEO GymExerciseEO { get; set; }
+
+        public DateTime StartTime { get; set; }
     }
 }

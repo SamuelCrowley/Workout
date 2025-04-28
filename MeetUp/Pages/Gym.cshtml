@@ -1,0 +1,1264 @@
+﻿@page
+@using System.Text.Json
+@using System.Text.Json.Serialization
+@using MeetUp.Views
+@using Microsoft.AspNetCore.Antiforgery
+@using static MeetUp.Enums.Enums
+@inject IAntiforgery antiforgery
+@model ChatModel
+@{
+    ViewData["Title"] = "Chat";
+}
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - MeetUp</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<div class="container-fluid">
+    <!-- SEC 27-Apr-2025 - History button -->
+    <div class="position-fixed" style="bottom: 20px; right: 20px; z-index: 1000;">
+        <button id="viewHistoryBtn" class="btn btn-info btn-lg rounded-circle"
+                style="width: 60px; height: 60px;"
+                data-bs-toggle="tooltip" data-bs-placement="left" title="View Workout History">
+            <i class="bi bi-clock-history"></i>
+        </button>
+    </div>
+
+    <input type="hidden" id="__RequestVerificationToken"
+           name="__RequestVerificationToken"
+           value="@antiforgery.GetAndStoreTokens(HttpContext).RequestToken">
+
+    <div class="row">
+        <div class="col-md-6 p-3">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="mb-0">Chat Room</h2>
+                <div id="restTimerContainer" class="card bg-light" style="display: none;">
+                    <div class="card-body py-2">
+                        <div class="d-flex align-items-center">
+                            <span class="me-2">Rest:</span>
+                            <span id="restTimerDisplay" class="fw-bold me-2">00:00</span>
+                            <button id="startRestTimerBtn" class="btn btn-sm btn-success me-1">
+                                <i class="bi bi-play-fill"></i>
+                            </button>
+                            <button id="stopRestTimerBtn" class="btn btn-sm btn-danger me-2">
+                                <i class="bi bi-stop-fill"></i>
+                            </button>
+                            <select id="restTimerDuration" class="form-select form-select-sm" style="width: 80px;">
+                                <option value="30">0:30</option>
+                                <option value="60">1:00</option>
+                                <option value="90" selected>1:30</option>
+                                <option value="120">2:00</option>
+                                <option value="150">2:30</option>
+                                <option value="180">3:00</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <ul id="messagesList" class="list-group" style="height: 60vh; overflow-y: auto;"></ul>
+
+            <div class="input-group mb-3">
+                <input id="messageInput" type="text" class="form-control" placeholder="Type a message" />
+                <div class="input-group-append">
+                    <button class="btn btn-primary" onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 p-0">
+            <div id="gymTrackerContainer">
+                <div id="initialView" class="card m-3 shadow-sm">
+                    <div class="card-body text-center">
+                        <h4 class="card-title">Ready to work out?</h4>
+                        <p class="card-text">Track your progress by starting a workout session.</p>
+                        <div class="mb-3" id="workoutNameContainer" style="display: none;">
+                            <input type="text" id="workoutNameInput" class="form-control" placeholder="Workout name (e.g., Chest, Push, Legs)">
+                        </div>
+                        <button class="btn btn-success btn-lg" id="startWorkoutBtn" style="display: none;">
+                            <i class="bi bi-play-circle"></i> Start Workout
+                        </button>
+                        <button class="btn btn-info btn-lg" id="createGymUserBtn" style="display: none;">
+                            Create Gym Account
+                        </button>
+                    </div>
+                </div>
+
+                <!-- SEC 27-Apr-2025 - Active workout info -->
+                <div id="activeWorkoutView" class="card m-3 shadow-sm" style="display: none;">
+                    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                        <div>
+                            <h4 id="workoutNameDisplay" class="mb-0">Workout</h4>
+                            <small id="workoutStartTimeDisplay"></small>
+                        </div>
+                        <button id="endWorkoutBtn" class="btn btn-danger btn-sm">End Workout</button>
+                    </div>
+
+                    <div class="card-body">
+                        <!-- SEC 27-Apr-2025 - Timer -->
+                        <div class="d-flex justify-content-between mb-3">
+                            <div class="text-center">
+                                <h5>Duration</h5>
+                                <h3 id="workoutTimer">00:00:00</h3>
+                            </div>
+                            <div class="text-center">
+                                <h5>Exercises</h5>
+                                <h3 id="exerciseCount">0</h3>
+                            </div>
+                            <div class="text-center">
+                                <h5>Total Sets</h5>
+                                <h3 id="totalSets">0</h3>
+                            </div>
+                        </div>
+
+                        <div id="currentExercises" class="mb-4">
+                            <h5>Exercises</h5>
+                            <div id="exercisesList" class="list-group">
+                                <!-- SEC 27-Apr-2025 - Handled by JS/API calls -->
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="input-group">
+                                <input type="text" id="exerciseNameInput" class="form-control" placeholder="Exercise name (e.g., Bench Press)">
+                                <button id="addExerciseBtn" class="btn btn-primary">Add Exercise</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SEC 27-Apr-2025 - Exercise info -->
+                <div id="exerciseDetailView" class="card m-3 shadow-sm" style="display: none;">
+                    <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                        <h4 id="exerciseDetailTitle" class="mb-0">Exercise Details</h4>
+                        <button id="backToWorkoutBtn" class="btn btn-light btn-sm">Back to Workout</button>
+                    </div>
+
+                    <div class="card-body">
+                        <div id="setsList" class="mb-3">
+                            <h5>Sets</h5>
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Set</th>
+                                        <th>Reps</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="setsTableBody">
+                                    <!-- SEC 27-Apr-2025 - Handled by JS/API calls -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="d-grid">
+                            <button id="addSetBtn" class="btn btn-primary">Add New Set</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SEC 27-Apr-2025 - Set info -->
+                <div id="setDetailView" class="card m-3 shadow-sm" style="display: none;">
+                    <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                        <h4 id="setDetailTitle" class="mb-0">Set Details</h4>
+                        <button id="backToExerciseBtn" class="btn btn-light btn-sm">Back to Exercise</button>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="setWeightInput" class="form-label">Weight (kg)</label>
+                            <input type="number" id="setWeightInput" class="form-control" min="0" step="0.5" value="20">
+                        </div>
+
+                        <div class="mb-3">
+                            <h5>Repetitions</h5>
+                            <div class="row g-3 mb-3">
+                                <div class="col-md-3">
+                                    <label for="repCountInput" class="form-label">Number of Reps</label>
+                                    <select id="repCountInput" class="form-select">
+                                        @for (int i = 1; i <= 20; i++)
+                                        {
+                                            <option value="@i" selected="@(i == 6)">@i</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="defaultDifficultyInput" class="form-label">Default Difficulty</label>
+                                    <select id="defaultDifficultyInput" class="form-select">
+                                        @foreach (var difficulty in Enum.GetValues(typeof(RepetitionDifficulty)))
+                                        {
+                                            @if (difficulty.ToString() != "Unknown")
+                                            {
+                                                <option value="@difficulty" selected="@(difficulty.ToString() == "Moderate")">
+                                                    @difficulty
+                                                </option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-3 d-flex align-items-end">
+                                    <button id="addRepsBtn" class="btn btn-primary w-100">Add Reps</button>
+                                </div>
+                                <div class="col-md-3 d-flex align-items-end">
+                                    <button id="clearRepsBtn" class="btn btn-outline-danger w-100">Clear All</button>
+                                </div>
+                            </div>
+                            <div id="repsList" class="list-group mb-3">
+                                <!-- SEC 27-Apr-2025 - Handled by JS/API calls -->
+                            </div>
+                        </div>
+
+                        <div class="d-grid">
+                            <button id="saveSetBtn" class="btn btn-success">Save Set</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="historyModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Workout History</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="historyLoading" class="text-center">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+                <div id="historyContent" style="display: none;">
+                    <ul id="workoutSessionsList" class="list-group mb-3"></ul>
+                    <div id="workoutDetails" style="display: none;">
+                        <h5>Session Details</h5>
+                        <div id="sessionExercises" class="mt-3"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        #messagesList {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 10px;
+            list-style-type: none;
+        }
+
+        .list-group-item {
+            margin-bottom: 8px;
+            padding: 8px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        .exercise-item {
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .exercise-item:hover {
+            background-color: #e9ecef;
+        }
+
+        #workoutTimer {
+            font-family: 'Courier New', monospace;
+            font-weight: bold;
+        }
+
+        #restTimerContainer {
+            min-width: 280px;
+        }
+
+        #restTimerDisplay {
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+        }
+
+        .difficulty-badge {
+            cursor: pointer;
+            min-width: 100px;
+            display: inline-block;
+            text-align: center;
+            padding: 5px;
+            border-radius: 4px;
+            margin-right: 5px;
+        }
+
+        .difficulty-Warmup {
+            background-color: #0dcaf0;
+            color: white;
+        }
+
+        .difficulty-Easy {
+            background-color: #198754;
+            color: white;
+        }
+
+        .difficulty-Moderate {
+            background-color: #ffc107;
+            color: black;
+        }
+
+        .difficulty-Difficult {
+            background-color: #fd7e14;
+            color: white;
+        }
+
+        .difficulty-Extreme {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .difficulty-Failed {
+            background-color: #000000;
+            color: white;
+        }
+
+        .rep-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+        }
+
+        .rep-item-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .rep-weight {
+            font-weight: bold;
+            margin-left: 5px;
+        }
+
+        #historyModal .modal-body {
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        #viewHistoryBtn {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        #viewHistoryBtn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+
+        .workout-session-item {
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .workout-session-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .exercise-card {
+            border-left: 4px solid #0d6efd;
+        }
+
+        .set-item {
+            border-left: 3px solid #6c757d;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
+    <script>
+        const difficultyOptions = {
+            "Warmup": "Warmup",
+            "Easy": "Easy",
+            "Moderate": "Moderate",
+            "Difficult": "Difficult",
+            "Extreme": "Extreme",
+            "Failed": "Failed"
+        };
+
+        const difficultyClasses = {
+            "Warmup": "difficulty-Warmup",
+            "Easy": "difficulty-Easy",
+            "Moderate": "difficulty-Moderate",
+            "Difficult": "difficulty-Difficult",
+            "Extreme": "difficulty-Extreme",
+            "Failed": "difficulty-Failed"
+        };
+
+        function getDifficultyInfo(difficultyValue) {
+            return {
+                name: difficultyOptions[difficultyValue],
+                class: difficultyClasses[difficultyValue]
+            };
+        }
+
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/chatHub", {
+                skipNegotiation: true,
+                transport: signalR.HttpTransportType.WebSockets
+            })
+            .configureLogging(signalR.LogLevel.Information)
+            .build();
+
+        function setupChat() {
+            document.getElementById("messageInput").addEventListener("keydown", function (event) {
+                if (event.key === "Enter" && this.value.trim() !== "") {
+                    sendMessage();
+                }
+            });
+
+            connection.on("ReceiveMessage", function (user, message, color) {
+                const msg = document.createElement("li");
+                msg.className = "list-group-item";
+                msg.innerHTML = `<strong style="color:${color}">${user}:</strong> ${message}`;
+                const messagesList = document.getElementById("messagesList");
+                messagesList.appendChild(msg);
+                messagesList.scrollTo({
+                    top: messagesList.scrollHeight,
+                    behavior: 'smooth'
+                });
+            });
+
+            async function startConnection() {
+                try {
+                    await connection.start();
+                    console.log("SignalR Connected.");
+                } catch (err) {
+                    console.error("SignalR Connection Error:", err.toString());
+                    setTimeout(startConnection, 5000);
+                }
+            }
+
+            startConnection();
+        }
+
+        async function sendMessage() {
+            const messageInput = document.getElementById("messageInput");
+            const message = messageInput.value.trim();
+            if (!message) return;
+
+            try {
+                await connection.invoke("SendMessage", message);
+                messageInput.value = "";
+                messageInput.focus();
+            } catch (err) {
+                console.error("Error sending message:", err.toString());
+            }
+        }
+
+        let currentSessionId = null;
+        let currentExerciseId = null;
+        let currentSetId = null;
+        let workoutStartTime = null;
+        let timerInterval = null;
+        let restTimerInterval = null;
+        let restTimerRemaining = 90;
+        let exercises = [];
+        let currentReps = [];
+
+        async function callApi(endpoint, method = 'GET', body = null) {
+            const headers = {
+                'Accept': 'application/json',
+                'RequestVerificationToken': document.getElementById('__RequestVerificationToken').value
+            };
+
+            if (method !== 'GET') {
+                headers['Content-Type'] = 'application/json';
+            }
+
+            try {
+                const response = await fetch(`/api/GymApi/${endpoint}`, {
+                    method,
+                    credentials: 'include',
+                    headers,
+                    body: body ? JSON.stringify(body) : null
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+                }
+
+                return await response.json();
+            } catch (error) {
+                console.error(`API Error (${endpoint}):`, error);
+                throw error;
+            }
+        }
+
+        async function checkGymUserExists() {
+            try {
+                const response = await callApi('exists');
+
+                document.getElementById("startWorkoutBtn").style.display = response.exists ? "inline-block" : "none";
+                document.getElementById("createGymUserBtn").style.display = response.exists ? "none" : "inline-block";
+                document.getElementById("workoutNameContainer").style.display = response.exists ? "block" : "none";
+
+                if (response.exists) {
+                    await checkActiveWorkout();
+                }
+            } catch (error) {
+                alert("Error checking gym user status: " + error.message);
+            }
+        }
+
+        async function checkActiveWorkout() {
+            try {
+                const response = await callApi('activeWorkout');
+
+                if (response.success && response.hasActiveWorkout) {
+                    const workout = response.workout;
+                    currentSessionId = workout.id;
+                    workoutStartTime = new Date(workout.startTime);
+
+                    exercises = workout.exercises.map(ex => ({
+                        id: ex.id,
+                        name: ex.name,
+                        sets: ex.sets.map(set => ({
+                            id: set.id,
+                            reps: set.reps.map(rep => ({
+                                id: rep.id,
+                                weight: rep.weight,
+                                difficulty: rep.difficulty,
+                                order: rep.order
+                            }))
+                        }))
+                    }));
+
+                    document.getElementById("initialView").style.display = "none";
+                    document.getElementById("activeWorkoutView").style.display = "block";
+                    document.getElementById("workoutNameDisplay").textContent = workout.name;
+                    document.getElementById("workoutStartTimeDisplay").textContent = new Date(workout.startTime).toLocaleTimeString();
+                    document.getElementById("restTimerContainer").style.display = "block";
+                    startTimer();
+                    renderExercisesList();
+                    updateExerciseCount();
+                }
+            } catch (error) {
+                console.error("Error checking active workout:", error);
+            }
+        }
+
+        async function createGymUser() {
+            try {
+                await callApi('create', 'POST');
+                alert("Gym user account created!");
+                document.getElementById("startWorkoutBtn").style.display = "inline-block";
+                document.getElementById("createGymUserBtn").style.display = "none";
+                document.getElementById("workoutNameContainer").style.display = "block";
+            } catch (error) {
+                alert("Error creating gym user: " + error.message);
+            }
+        }
+
+        async function startWorkout() {
+            const workoutName = document.getElementById("workoutNameInput").value.trim();
+            if (!workoutName) {
+                alert("Please enter a workout name");
+                return;
+            }
+
+            try {
+                const response = await callApi('startWorkout', 'POST', workoutName);
+                if (!response.success) {
+                    throw new Error(response.message);
+                }
+
+                resetWorkoutData();
+                currentSessionId = response.sessionId;
+                workoutStartTime = new Date();
+                startTimer();
+                document.getElementById("initialView").style.display = "none";
+                document.getElementById("activeWorkoutView").style.display = "block";
+                document.getElementById("workoutNameDisplay").textContent = workoutName;
+                document.getElementById("workoutStartTimeDisplay").textContent = workoutStartTime.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+                document.getElementById("restTimerContainer").style.display = "block";
+                restTimerRemaining = parseInt(document.getElementById("restTimerDuration").value);
+            } catch (error) {
+                alert("Error starting workout: " + error);
+            }
+        }
+
+        function resetWorkoutData() {
+            exercises = [];
+            currentReps = [];
+            currentExerciseId = null;
+            currentSetId = null;
+            updateExerciseCount();
+            document.getElementById("exercisesList").innerHTML = "";
+            document.getElementById("setsTableBody").innerHTML = "";
+            document.getElementById("repsList").innerHTML = "";
+            document.getElementById("exerciseNameInput").value = "";
+            document.getElementById("setWeightInput").value = "20";
+        }
+
+        async function endWorkout() {
+            if (!confirm("Are you sure you want to end this workout?")) {
+                return;
+            }
+
+            try {
+                const response = await callApi(`endWorkout/${currentSessionId}`, 'POST');
+                if (!response.success) {
+                    throw new Error(response.message);
+                }
+
+                stopTimer();
+                stopRestTimer();
+                currentSessionId = null;
+                workoutStartTime = null;
+                resetWorkoutData();
+                document.getElementById("activeWorkoutView").style.display = "none";
+                document.getElementById("exerciseDetailView").style.display = "none";
+                document.getElementById("setDetailView").style.display = "none";
+                document.getElementById("initialView").style.display = "block";
+                document.getElementById("restTimerContainer").style.display = "none";
+                document.getElementById("workoutNameInput").value = "";
+            } catch (error) {
+                alert("Error ending workout: " + error.message);
+            }
+        }
+
+        function startTimer() {
+            stopTimer();
+            function updateTimer() {
+                const now = new Date();
+                const diff = now - workoutStartTime;
+                const hours = Math.floor(diff / (1000 * 60 * 60)).toString().padStart(2, '0');
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60)).toString().padStart(2, '0');
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000).toString().padStart(2, '0');
+                document.getElementById("workoutTimer").textContent = `${hours}:${minutes}:${seconds}`;
+            }
+            updateTimer();
+            timerInterval = setInterval(updateTimer, 1000);
+        }
+
+        function stopTimer() {
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+        }
+
+        function startRestTimer() {
+            stopRestTimer();
+            restTimerRemaining = parseInt(document.getElementById("restTimerDuration").value);
+            function updateRestTimer() {
+                const minutes = Math.floor(restTimerRemaining / 60).toString().padStart(2, '0');
+                const seconds = (restTimerRemaining % 60).toString().padStart(2, '0');
+                document.getElementById("restTimerDisplay").textContent = `${minutes}:${seconds}`;
+                if (restTimerRemaining <= 0) {
+                    stopRestTimer();
+                    alert("Rest time is over!");
+                    return;
+                }
+                restTimerRemaining--;
+            }
+            updateRestTimer();
+            restTimerInterval = setInterval(updateRestTimer, 1000);
+        }
+
+        function stopRestTimer() {
+            if (restTimerInterval) {
+                clearInterval(restTimerInterval);
+                restTimerInterval = null;
+            }
+        }
+
+        async function addExercise() {
+            const exerciseName = document.getElementById("exerciseNameInput").value.trim();
+            if (!exerciseName) {
+                alert("Please enter an exercise name");
+                return;
+            }
+
+            try {
+                const response = await callApi(`addExercise/${currentSessionId}`, 'POST', exerciseName);
+                if (!response.success) {
+                    throw new Error(response.message);
+                }
+
+                exercises.push({
+                    id: response.exerciseId,
+                    name: exerciseName,
+                    sets: []
+                });
+                updateExerciseCount();
+                renderExercisesList();
+                document.getElementById("exerciseNameInput").value = "";
+            } catch (error) {
+                alert("Error adding exercise: " + error.message);
+            }
+        }
+
+        async function deleteExercise(exerciseId) {
+            if (!confirm("Are you sure you want to delete this exercise and all its sets?")) {
+                return;
+            }
+
+            try {
+                const response = await callApi(`deleteExercise/${exerciseId}`, 'DELETE');
+                if (!response.success) {
+                    throw new Error(response.message);
+                }
+
+                exercises = exercises.filter(ex => ex.id !== exerciseId);
+                updateExerciseCount();
+                renderExercisesList();
+
+                if (currentExerciseId === exerciseId) {
+                    backToWorkout();
+                }
+            } catch (error) {
+                alert("Error deleting exercise: " + error.message);
+            }
+        }
+
+        function viewExerciseDetails(exerciseId) {
+            const exercise = exercises.find(ex => ex.id === exerciseId);
+            if (!exercise) return;
+            currentExerciseId = exerciseId;
+            document.getElementById("exerciseDetailTitle").textContent = exercise.name;
+            document.getElementById("activeWorkoutView").style.display = "none";
+            document.getElementById("exerciseDetailView").style.display = "block";
+            document.getElementById("setDetailView").style.display = "none";
+            renderSetsList();
+        }
+
+        function addSet() {
+            currentReps = [];
+            document.getElementById("setDetailTitle").textContent = document.getElementById("exerciseDetailTitle").textContent;
+            document.getElementById("exerciseDetailView").style.display = "none";
+            document.getElementById("setDetailView").style.display = "block";
+            document.getElementById("setWeightInput").value = "20";
+            renderRepsList();
+        }
+
+        function addReps() {
+            const repCount = parseInt(document.getElementById("repCountInput").value);
+            const defaultDifficulty = document.getElementById("defaultDifficultyInput").value;
+            const defaultWeight = parseFloat(document.getElementById("setWeightInput").value) || 0;
+
+            for (let i = 0; i < repCount; i++) {
+                currentReps.push({
+                    id: 'rep-' + Date.now() + '-' + i,
+                    difficulty: defaultDifficulty,
+                    weight: defaultWeight,
+                    order: currentReps.length + 1
+                });
+            }
+
+            renderRepsList();
+        }
+
+        function clearReps() {
+            if (confirm("Are you sure you want to clear all reps?")) {
+                currentReps = [];
+                renderRepsList();
+            }
+        }
+
+        function updateRepDifficulty(repId) {
+            const repIndex = currentReps.findIndex(rep => rep.id === repId);
+            if (repIndex === -1) return;
+
+            const difficulties = Object.keys(difficultyOptions);
+            const currentIndex = difficulties.indexOf(currentReps[repIndex].difficulty);
+            const nextIndex = (currentIndex + 1) % difficulties.length;
+
+            currentReps[repIndex].difficulty = difficulties[nextIndex];
+            renderRepsList();
+        }
+
+        function updateRepWeight(repId) {
+            const repIndex = currentReps.findIndex(rep => rep.id === repId);
+            if (repIndex === -1) return;
+
+            const currentWeight = currentReps[repIndex].weight || document.getElementById("setWeightInput").value;
+            const newWeight = prompt("Enter new weight (kg):", currentWeight);
+
+            if (newWeight !== null && !isNaN(newWeight)) {
+                currentReps[repIndex].weight = parseFloat(newWeight);
+                renderRepsList();
+            }
+        }
+
+        function deleteRep(repId) {
+            currentReps = currentReps.filter(rep => rep.id !== repId);
+
+            currentReps.forEach((rep, index) => {
+                rep.order = index + 1;
+            });
+            renderRepsList();
+        }
+
+        async function saveSet() {
+            const defaultWeight = parseFloat(document.getElementById("setWeightInput").value);
+            if (isNaN(defaultWeight)) {
+                alert("Please enter a valid weight");
+                return;
+            }
+
+            //SEC 27-Apr-2025 - If there is an issue with setting weight, default to 0 and user can manually set it later or delete the set
+            currentReps.forEach(rep => {
+                if (!rep.weight || isNaN(rep.weight)) {
+                    rep.weight = 0;
+                }
+            });
+
+            if (currentReps.length === 0) {
+                alert("Please add at least one rep");
+                return;
+            }
+
+            try {
+                const repsToSave = currentReps.map((rep, index) => ({
+                    Weight: rep.weight,
+                    Difficulty: rep.difficulty,
+                    Order: index + 1  
+                }));
+
+                const response = await callApi(`addSet/${currentExerciseId}`, 'POST', repsToSave);
+                if (!response.success) {
+                    throw new Error(response.message);
+                }
+
+                const exerciseIndex = exercises.findIndex(ex => ex.id === currentExerciseId);
+                if (exerciseIndex === -1) return;
+
+                exercises[exerciseIndex].sets.push({
+                    id: response.setId,
+                    reps: response.reps.map(rep => ({
+                        id: rep.id,
+                        weight: rep.weight,
+                        difficulty: rep.difficulty,
+                        order: rep.order
+                    }))
+                });
+
+                updateExerciseCount();
+                backToExercise();
+            } catch (error) {
+                alert("Error saving set: " + error.message);
+            }
+        }
+
+        async function deleteSet(exerciseId, setId) {
+            if (!confirm("Are you sure you want to delete this set?")) {
+                return;
+            }
+
+            try {
+                const response = await callApi(`deleteSet/${setId}`, 'DELETE');
+                if (!response.success) {
+                    throw new Error(response.message);
+                }
+
+                const exerciseIndex = exercises.findIndex(ex => ex.id === exerciseId);
+                if (exerciseIndex === -1) return;
+
+                const setIndex = exercises[exerciseIndex].sets.findIndex(set => set.id === setId);
+                if (setIndex === -1) return;
+
+                exercises[exerciseIndex].sets.splice(setIndex, 1);
+                updateExerciseCount();
+                renderSetsList();
+            } catch (error) {
+                alert("Error deleting set: " + error.message);
+            }
+        }
+
+        function viewSetDetails(exerciseId, setId) {
+            const exercise = exercises.find(ex => ex.id === exerciseId);
+            if (!exercise) return;
+
+            const set = exercise.sets.find(s => s.id === setId);
+            if (!set) return;
+
+            currentExerciseId = exerciseId;
+            currentSetId = setId;
+            document.getElementById("setDetailTitle").textContent = exercise.name;
+            document.getElementById("setWeightInput").value = set.reps[0]?.weight || 20;
+            currentReps = set.reps.map(rep => ({
+                id: rep.id,
+                difficulty: rep.difficulty,
+                weight: rep.weight,
+                order: rep.order
+            }));
+            document.getElementById("exerciseDetailView").style.display = "none";
+            document.getElementById("setDetailView").style.display = "block";
+            renderRepsList();
+        }
+
+        function updateExerciseCount() {
+            let totalSets = 0;
+            exercises.forEach(ex => totalSets += ex.sets.length);
+            document.getElementById("exerciseCount").textContent = exercises.length;
+            document.getElementById("totalSets").textContent = totalSets;
+        }
+
+        function renderExercisesList() {
+            const container = document.getElementById("exercisesList");
+            container.innerHTML = "";
+            if (exercises.length === 0) {
+                container.innerHTML = '<div class="text-muted">No exercises added yet</div>';
+                return;
+            }
+            exercises.forEach(exercise => {
+                const exerciseItem = document.createElement("div");
+                exerciseItem.className = "list-group-item exercise-item";
+                exerciseItem.innerHTML = `
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <h6 class="mb-1">${exercise.name}</h6>
+                                            <small class="text-muted">${exercise.sets.length} sets</small>
+                                        </div>
+                                        <div>
+                                            <button class="btn btn-sm btn-outline-primary me-2" onclick="viewExerciseDetails('${exercise.id}')">
+                                                View/Add Sets
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger" onclick="deleteExercise('${exercise.id}')">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                `;
+                container.appendChild(exerciseItem);
+            });
+        }
+
+        function renderSetsList() {
+            const exercise = exercises.find(ex => ex.id === currentExerciseId);
+            if (!exercise) return;
+            const container = document.getElementById("setsTableBody");
+            container.innerHTML = "";
+            if (exercise.sets.length === 0) {
+                container.innerHTML = '<tr><td colspan="3" class="text-center text-muted">No sets recorded yet</td></tr>';
+                return;
+            }
+            exercise.sets.forEach((set, index) => {
+                const setRow = document.createElement("tr");
+                setRow.innerHTML = `
+                                    <td>${index + 1}</td>
+                                    <td>${set.reps.length}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-info me-2" onclick="viewSetDetails('${exercise.id}', '${set.id}')">
+                                            Edit
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger" onclick="deleteSet('${exercise.id}', '${set.id}')">
+                                            Delete
+                                        </button>
+                                    </td>
+                                `;
+                container.appendChild(setRow);
+            });
+        }
+
+        function renderRepsList() {
+            const container = document.getElementById("repsList");
+            container.innerHTML = "";
+
+            if (currentReps.length === 0) {
+                container.innerHTML = '<div class="text-muted mb-2">No reps added yet</div>';
+                return;
+            }
+
+            currentReps.forEach((rep, index) => {
+                const difficultyInfo = getDifficultyInfo(rep.difficulty);
+                const weight = rep.weight || document.getElementById("setWeightInput").value;
+
+                const repItem = document.createElement("div");
+                repItem.className = "list-group-item rep-item";
+                repItem.innerHTML = `
+                                    <span>Rep ${index + 1}</span>
+                                    <div class="rep-item-controls">
+                                        <span class="badge ${difficultyInfo.class} difficulty-badge"
+                                              onclick="updateRepDifficulty('${rep.id}')">
+                                            ${difficultyInfo.name} (${weight}kg)
+                                        </span>
+                                        <button class="btn btn-sm btn-outline-secondary" onclick="updateRepWeight('${rep.id}')">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger" onclick="deleteRep('${rep.id}')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                `;
+                container.appendChild(repItem);
+            });
+        }
+
+        function backToWorkout() {
+            document.getElementById("exerciseDetailView").style.display = "none";
+            document.getElementById("setDetailView").style.display = "none";
+            document.getElementById("activeWorkoutView").style.display = "block";
+            currentExerciseId = null;
+            currentSetId = null;
+            renderExercisesList();
+        }
+
+        function backToExercise() {
+            document.getElementById("setDetailView").style.display = "none";
+            document.getElementById("exerciseDetailView").style.display = "block";
+            currentSetId = null;
+            renderSetsList();
+        }
+
+        async function loadWorkoutHistory() {
+            try {
+                showHistoryLoading(true);
+                const response = await callApi('workoutHistory');
+
+                if (!response.success) {
+                    throw new Error(response.message);
+                }
+
+                const sessionsList = document.getElementById('workoutSessionsList');
+                sessionsList.innerHTML = '';
+
+                if (response.sessions.length === 0) {
+                    sessionsList.innerHTML = '<li class="list-group-item text-muted">No workout history found</li>';
+                    return;
+                }
+
+                response.sessions.forEach(session => {
+                    const sessionItem = document.createElement('li');
+                    sessionItem.className = 'list-group-item d-flex justify-content-between align-items-center';
+                    sessionItem.innerHTML = `
+                                <div>
+                                    <strong>${session.name}</strong>
+                                    <div class="text-muted small">
+                                        ${new Date(session.startTime).toLocaleDateString()} •
+                                        ${Math.round(session.duration)} minutes •
+                                        ${session.exerciseCount} exercises •
+                                        ${session.totalSets} sets
+                                    </div>
+                                </div>
+                                <div>
+                                    <button class="btn btn-sm btn-outline-primary me-2" onclick="viewSessionDetails('${session.id}')">
+                                        <i class="bi bi-eye"></i> View
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteSession('${session.id}')">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </button>
+                                </div>
+                            `;
+                    sessionsList.appendChild(sessionItem);
+                });
+
+                showHistoryLoading(false);
+            } catch (error) {
+                showHistoryLoading(false);
+                alert('Error loading workout history: ' + error.message);
+            }
+        }
+
+        async function viewSessionDetails(sessionId) {
+            try {
+                showHistoryLoading(true);
+                const response = await callApi(`workoutDetails/${sessionId}`);
+
+                if (!response.success) {
+                    throw new Error(response.message);
+                }
+
+                const workoutDetails = document.getElementById('workoutDetails');
+                workoutDetails.dataset.sessionId = sessionId;
+
+                const session = response.session;
+                const exercisesContainer = document.getElementById('sessionExercises');
+                exercisesContainer.innerHTML = '';
+
+                session.exercises.forEach(exercise => {
+                    const exerciseCard = document.createElement('div');
+                    exerciseCard.className = 'card mb-3';
+                    exerciseCard.innerHTML = `
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0">${exercise.name}</h6>
+                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteExerciseFromHistory('${exercise.id}')">
+                                        <i class="bi bi-trash"></i> Delete
+                                    </button>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-group">
+                                        ${exercise.sets.map(set => `
+                                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <strong>Set</strong>
+                                                    <div>
+                                                        ${set.reps.map(rep => `
+                                                            <span class="badge ${getDifficultyInfo(rep.difficulty).class} me-1">
+                                                                ${rep.weight}kg (${rep.difficulty})
+                                                            </span>
+                                                        `).join('')}
+                                                    </div>
+                                                </div>
+                                                <button class="btn btn-sm btn-outline-danger" onclick="deleteSetFromHistory('${set.id}')">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </li>
+                                        `).join('')}
+                                    </ul>
+                                </div>
+                            `;
+                    exercisesContainer.appendChild(exerciseCard);
+                });
+
+                document.getElementById('workoutDetails').style.display = 'block';
+                showHistoryLoading(false);
+            } catch (error) {
+                showHistoryLoading(false);
+                alert('Error loading session details: ' + error.message);
+            }
+        }
+
+        async function deleteSession(sessionId) {
+            if (!confirm('Are you sure you want to delete this entire workout session and all its data?')) {
+                return;
+            }
+
+            try {
+                const response = await callApi(`deleteSession/${sessionId}`, 'DELETE');
+                if (!response.success) {
+                    throw new Error(response.message);
+                }
+
+                alert('Session deleted successfully');
+
+                await loadWorkoutHistory();
+
+                document.getElementById('workoutDetails').style.display = 'none';
+            } catch (error) {
+                alert('Error deleting session: ' + error.message);
+                console.error('Delete error:', error);
+            }
+        }
+
+        async function deleteExerciseFromHistory(exerciseId) {
+            if (!confirm('Are you sure you want to delete this exercise and all its sets?')) {
+                return;
+            }
+
+            try {
+                const response = await callApi(`deleteExercise/${exerciseId}`, 'DELETE');
+                if (!response.success) {
+                    throw new Error(response.message);
+                }
+
+                alert('Exercise deleted successfully');
+
+                const workoutDetails = document.getElementById('workoutDetails');
+                if (workoutDetails.style.display === 'block') {
+                    const currentSessionId = workoutDetails.dataset.sessionId;
+                    await viewSessionDetails(currentSessionId);
+                }
+            } catch (error) {
+                alert('Error deleting exercise: ' + error.message);
+                console.error('Delete error:', error);
+            }
+        }
+
+        async function deleteSetFromHistory(setId) {
+            if (!confirm('Are you sure you want to delete this set?')) {
+                return;
+            }
+
+            try {
+                const response = await callApi(`deleteSet/${setId}`, 'DELETE');
+                if (!response.success) {
+                    throw new Error(response.message);
+                }
+
+                alert('Set deleted successfully');
+
+                const workoutDetails = document.getElementById('workoutDetails');
+                if (workoutDetails.style.display === 'block') {
+                    const currentSessionId = workoutDetails.dataset.sessionId;
+                    await viewSessionDetails(currentSessionId);
+                }
+            } catch (error) {
+                alert('Error deleting set: ' + error.message);
+                console.error('Delete error:', error);
+            }
+        }
+
+        function showHistoryLoading(show) {
+            document.getElementById('historyLoading').style.display = show ? 'block' : 'none';
+            document.getElementById('historyContent').style.display = show ? 'none' : 'block';
+        }
+
+        document.getElementById('viewHistoryBtn').addEventListener('click', async function () {
+            const modal = new bootstrap.Modal(document.getElementById('historyModal'));
+            modal.show();
+            document.getElementById('workoutDetails').style.display = 'none';
+            await loadWorkoutHistory();
+        });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            setupChat();
+            checkGymUserExists();
+
+            document.getElementById("startWorkoutBtn").addEventListener("click", startWorkout);
+            document.getElementById("createGymUserBtn").addEventListener("click", createGymUser);
+            document.getElementById("endWorkoutBtn").addEventListener("click", endWorkout);
+            document.getElementById("addExerciseBtn").addEventListener("click", addExercise);
+            document.getElementById("addSetBtn").addEventListener("click", addSet);
+            document.getElementById("backToWorkoutBtn").addEventListener("click", backToWorkout);
+            document.getElementById("backToExerciseBtn").addEventListener("click", backToExercise);
+            document.getElementById("addRepsBtn").addEventListener("click", addReps);
+            document.getElementById("clearRepsBtn").addEventListener("click", clearReps);
+            document.getElementById("saveSetBtn").addEventListener("click", saveSet);
+            document.getElementById("startRestTimerBtn").addEventListener("click", startRestTimer);
+            document.getElementById("stopRestTimerBtn").addEventListener("click", stopRestTimer);
+
+            document.getElementById("setWeightInput").value = "20"; // SEC 27-Apr-2025 - Get this from set info 
+
+            document.getElementById("restTimerDuration").addEventListener("change", function () {
+                restTimerRemaining = parseInt(this.value);
+                stopRestTimer();
+                const minutes = Math.floor(restTimerRemaining / 60).toString().padStart(2, '0');
+                const seconds = (restTimerRemaining % 60).toString().padStart(2, '0');
+                document.getElementById("restTimerDisplay").textContent = `${minutes}:${seconds}`;
+            });
+
+            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
+            document.getElementById('viewHistoryBtn').addEventListener('click', async function () {
+                const modal = new bootstrap.Modal(document.getElementById('historyModal'));
+                modal.show();
+                document.getElementById('workoutDetails').style.display = 'none';
+                await loadWorkoutHistory();
+            });
+
+            document.getElementById('historyModal').addEventListener('hidden.bs.modal', function () {
+                document.querySelector('.modal-backdrop').remove();
+                document.body.classList.remove('modal-open');
+                document.body.style.paddingRight = '';
+            });
+        });
+    </script>
+}

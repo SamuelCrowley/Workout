@@ -11,5 +11,8 @@ namespace MeetUp.Data.Gym
             return EntityObjectType.GymSessionEO;
         }
         public GymSessionEO GymSessionEO { get; set; }
+
+        public string ExerciseName { get; set; }
+        public DateTime StartTime { get; set; }
     }
 }

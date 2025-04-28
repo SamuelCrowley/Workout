@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using MeetUp.Areas.Application.Services;
 using Microsoft.AspNetCore.Identity;
 using MeetUp.Data.User;
+using MeetUp.Filters;
 
 namespace MeetUp
 {
@@ -15,8 +16,8 @@ namespace MeetUp
         {
             WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-            string connectionString = builder.Configuration.GetConnectionString("ApplicationDbContextConnection") ??
-                throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");
+            string connectionString = builder.Configuration.GetConnectionString("ApplicationDbContextConnection")
+                ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");
 
             _ = builder.Services.Configure<ThemeSettings>(builder.Configuration.GetSection("ThemeSettings"));
             _ = builder.Services.AddSingleton(provider =>
@@ -25,7 +26,10 @@ namespace MeetUp
                 return new ChatHubStateService(themeSettings.ChatColours);
             });
 
-            _ = builder.Services.AddControllers(); 
+            _ = builder.Services.AddControllers(options =>
+            {
+                options.Filters.Add<ExceptionFilter>();
+            });
 
             _ = builder.Services.AddDbContext<ApplicationDbContext>(x => x.UseSqlServer(connectionString));
 
@@ -40,14 +44,14 @@ namespace MeetUp
             WebApplication app = builder.Build();
 
             _ = app.MapControllers();
-
             if (!app.Environment.IsDevelopment())
-            {   
+            {
                 _ = app.UseExceptionHandler("/Error");
                 _ = app.UseHsts();
             }
             else
             {
+                app.UseDeveloperExceptionPage();
                 app.MapGet("/debug/routes", () =>
                             string.Join("\n", app.Services.GetRequiredService<IEnumerable<EndpointDataSource>>()
                                 .SelectMany(source => source.Endpoints)

@@ -4,6 +4,7 @@ using MeetUp.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace MeetUp.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250426211319_PKNames")]
+    partial class PKNames
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -25,7 +28,8 @@ namespace MeetUp.Migrations
             modelBuilder.Entity("MeetUp.Data.Gym.GymExerciseEO", b =>
                 {
                     b.Property<string>("ClassRef")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("Gym_ExercisesClassRef");
 
                     b.Property<string>("ExerciseName")
                         .IsRequired()
@@ -52,7 +56,8 @@ namespace MeetUp.Migrations
             modelBuilder.Entity("MeetUp.Data.Gym.GymRepetitionEO", b =>
                 {
                     b.Property<string>("ClassRef")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("Gym_RepetitionsClassRef");
 
                     b.Property<int>("Difficulty")
                         .HasColumnType("int");
@@ -81,7 +86,8 @@ namespace MeetUp.Migrations
             modelBuilder.Entity("MeetUp.Data.Gym.GymSessionEO", b =>
                 {
                     b.Property<string>("ClassRef")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("Gym_SessionsClassRef");
 
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime2");
@@ -111,7 +117,8 @@ namespace MeetUp.Migrations
             modelBuilder.Entity("MeetUp.Data.Gym.GymSetEO", b =>
                 {
                     b.Property<string>("ClassRef")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("Gym_SetsClassRef");
 
                     b.Property<string>("ParentRef")
                         .IsRequired()
@@ -134,7 +141,8 @@ namespace MeetUp.Migrations
             modelBuilder.Entity("MeetUp.Data.Gym.GymUserEO", b =>
                 {
                     b.Property<string>("ClassRef")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(450)")
+                        .HasColumnName("Gym_UsersClassRef");
 
                     b.Property<string>("ParentRef")
                         .IsRequired()

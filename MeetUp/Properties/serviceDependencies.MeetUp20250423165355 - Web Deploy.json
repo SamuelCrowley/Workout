@@ -1,0 +1,26 @@
+{
+  "dependencies": {
+    "secrets1": {
+      "serviceConnectorResourceId": "/subscriptions/[parameters('subscriptionId')]/resourcegroups/[parameters('resourceGroupName')]/providers/Microsoft.Web/sites/MeetUp20250423165355/providers/Microsoft.ServiceLinker/linkers/VaultUri_86FC1BF7F8",
+      "secretStore": "AzureAppSettings",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.KeyVault/vaults/MeetUpKeyVault",
+      "type": "secrets.keyVault",
+      "connectionId": "VaultUri",
+      "dynamicId": null
+    },
+    "mssql2": {
+      "serviceConnectorResourceId": "/subscriptions/[parameters('subscriptionId')]/resourcegroups/[parameters('resourceGroupName')]/providers/Microsoft.Web/sites/MeetUp20250423165355/providers/Microsoft.ServiceLinker/linkers/ConnectionStringsApplicationDbContextCon_12E6A40820",
+      "secretStore": "AzureKeyVault",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/meetupserver/databases/MeetUpDB",
+      "type": "mssql.azure",
+      "connectionId": "ConnectionStrings:ApplicationDbContextConnection"
+    },
+    "mssql1": {
+      "serviceConnectorResourceId": "/subscriptions/[parameters('subscriptionId')]/resourcegroups/[parameters('resourceGroupName')]/providers/Microsoft.Web/sites/MeetUp20250423165355/providers/Microsoft.ServiceLinker/linkers/ConnectionStringsMeetUpContextConnection_D8D10BA74D",
+      "secretStore": "AzureKeyVault",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.Sql/servers/meetupserver/databases/MeetUpDB",
+      "type": "mssql.azure",
+      "connectionId": "ConnectionStrings:MeetUpContextConnection"
+    }
+  }
+}
