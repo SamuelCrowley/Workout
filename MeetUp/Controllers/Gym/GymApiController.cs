@@ -33,7 +33,7 @@ namespace MeetUp.Controllers.Gym
                 GymUserEO gymUserEO = await GetCurrentGymUser();
 
                 List<GymSessionEO> gymSessionEOs = await _context.GymSessions
-                    .Where(x => x.GymUserEO.ClassRef == gymUserEO.ClassRef && x.EndTime != DateTime.MaxValue)
+                    .Where(x => x.GymUserEO.ClassRef == gymUserEO.ClassRef && x.EndTime != null)
                     .OrderByDescending(x => x.StartTime)
                     .Include(x => x.GymExerciseEOs)
                     .ThenInclude(x => x.GymSetEOs)
@@ -42,15 +42,15 @@ namespace MeetUp.Controllers.Gym
                 return Ok(new
                 {
                     success = true,
-                    sessions = gymSessionEOs.Select(s => new
+                    sessions = gymSessionEOs.Select(x => new
                     {
-                        id = s.ClassRef,
-                        name = s.GymSessionType,
-                        startTime = s.StartTime,
-                        endTime = s.EndTime,
-                        duration = (s.EndTime - s.StartTime).TotalMinutes,
-                        exerciseCount = s.GymExerciseEOs.Count,
-                        totalSets = s.GymExerciseEOs.Sum(e => e.GymSetEOs.Count)
+                        id = x.ClassRef,
+                        name = x.GymSessionType,
+                        startTime = x.StartTime,
+                        endTime = x.EndTime,
+                        duration = ((x.EndTime ?? DateTime.MaxValue) - x.StartTime).TotalMinutes,
+                        exerciseCount = x.GymExerciseEOs.Count,
+                        totalSets = x.GymExerciseEOs.Sum(e => e.GymSetEOs.Count)
                     })
                 });
             }
@@ -111,7 +111,7 @@ namespace MeetUp.Controllers.Gym
             try
             {
                 GymUserEO gymUserEO = await GetCurrentGymUser();
-                bool hasActiveSession = await _context.GymSessions.AnyAsync(x => x.ClassRef == gymUserEO.ClassRef && x.EndTime == DateTime.MaxValue);
+                bool hasActiveSession = await _context.GymSessions.AnyAsync(x => x.ClassRef == gymUserEO.ClassRef && x.EndTime == null);
 
                 if (hasActiveSession)
                 {
@@ -122,7 +122,7 @@ namespace MeetUp.Controllers.Gym
                 {
                     GymUserEO = gymUserEO,
                     GymSessionType = workoutName,
-                    StartTime = DateTime.UtcNow,
+                    StartTime = DateTime.UtcNow
                 };
 
                 newGymSessionEO.SetMandatoryProperties(gymUserEO.ClassRef);
@@ -259,6 +259,54 @@ namespace MeetUp.Controllers.Gym
             }
         }
 
+        [HttpPatch("editSet/{setId}")]
+        public async Task<IActionResult> EditSet(string setId, [FromBody] List<RepetitionInfoDTO> repetitionInfoDTOs)
+        {
+            try
+            {
+                GymSetEO? gymSetEO = await GetCurrentGymSet(setId);
+
+                gymSetEO = await _context.GymSets.Where(x => x.ClassRef == setId)
+                    .Include(x => x.GymRepetitionEOs).FirstAsync();
+
+                gymSetEO.GymRepetitionEOs.Clear();
+
+                foreach (RepetitionInfoDTO repInfoDTO in repetitionInfoDTOs)
+                {
+                    GymRepetitionEO gymRepetitionEO = new GymRepetitionEO
+                    {
+                        GymSetEO = gymSetEO,
+                        Weight = repInfoDTO.Weight,
+                        Difficulty = Enum.Parse<RepetitionDifficulty>(repInfoDTO.Difficulty),
+                        Order = repInfoDTO.Order
+                    };
+
+                    gymRepetitionEO.SetMandatoryProperties(gymSetEO.ClassRef);
+                    await _context.GymRepetitions.AddAsync(gymRepetitionEO);
+                }
+
+                await _context.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Set edited successfully",
+                    setId = gymSetEO.ClassRef,
+                    reps = gymSetEO.GymRepetitionEOs.Select(r => new
+                    {
+                        id = r.ClassRef,
+                        weight = r.Weight,
+                        difficulty = r.Difficulty.ToString(),
+                        order = r.Order
+                    }).ToList()
+                });
+            }
+            catch (Exception ex)
+            {
+                return CatchException(ex);
+            }
+        }
+
         [HttpDelete("deleteSession/{sessionId}")]
         public async Task<IActionResult> DeleteSession(string sessionId)
         {
@@ -353,7 +401,7 @@ namespace MeetUp.Controllers.Gym
             }
         }
 
-        [HttpPost("create")]
+        [HttpPost("createGymUser")]
         public async Task<IActionResult> CreateGymUser()
         {
             try
@@ -401,8 +449,12 @@ namespace MeetUp.Controllers.Gym
             try
             {
                 GymUserEO gymUserEO = await GetCurrentGymUser();
+                gymUserEO = await _context.GymUsers
+                    .Where(x => x.ClassRef == gymUserEO.ClassRef)
+                    .Include(x => x.GymSessionEOs)
+                    .FirstAsync();
 
-                GymSessionEO? activeGymSessionEO = gymUserEO.GymSessionEOs.FirstOrDefault(s => s.EndTime != DateTime.MaxValue);
+                GymSessionEO? activeGymSessionEO = gymUserEO.GymSessionEOs.FirstOrDefault(x => x.EndTime == null);
 
                 if (activeGymSessionEO == null)
                 {
@@ -424,22 +476,22 @@ namespace MeetUp.Controllers.Gym
                         id = activeGymSessionEO.ClassRef,
                         name = activeGymSessionEO.GymSessionType,
                         startTime = activeGymSessionEO.StartTime,
-                        exercises = gymExerciseEOs.Select(e => new
+                        exercises = gymExerciseEOs.Select(x => new
                         {
-                            id = e.ClassRef,
-                            name = e.ExerciseName,
-                            startTime = e.StartTime,
-                            sets = e.GymSetEOs.Select(s => new
+                            id = x.ClassRef,
+                            name = x.ExerciseName,
+                            startTime = x.StartTime,
+                            sets = x.GymSetEOs.Select(x => new
                             {
-                                id = s.ClassRef,
-                                startTime = s.StartTime,
-                                reps = s.GymRepetitionEOs.Select(r => new
+                                id = x.ClassRef,
+                                startTime = x.StartTime,
+                                reps = x.GymRepetitionEOs.Select(x => new
                                 {
-                                    id = r.ClassRef,
-                                    weight = r.Weight,
-                                    difficulty = r.Difficulty.ToString()
+                                    id = x.ClassRef,
+                                    weight = x.Weight,
+                                    difficulty = x.Difficulty.ToString()
                                 }).ToList()
-                            }).OrderBy(s => s.startTime).ToList()
+                            }).OrderBy(x => x.startTime).ToList()
                         }).ToList()
                     }
                 });

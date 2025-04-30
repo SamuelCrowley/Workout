@@ -1,31 +1,35 @@
+using MeetUp.Data.User;
+using MeetUp.Extensions;
+using MeetUp.Pages.Interfaces;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using static MeetUp.Enums.Enums;
 
 namespace MeetUp.Views
 {
-    public class ChatModel : PageModel
+    public class GymModel : PageModel, IRequireLogin
     {
-        public Dictionary<RepetitionDifficulty, string> DifficultyOptions { get; } =
+        private readonly UserManager<ApplicationUserEO> _userManager;
+
+        public GymModel(UserManager<ApplicationUserEO> userManager)
+        {
+            _userManager = userManager;
+        }
+
+        public List<string> DifficultyOptions { get; } =
         Enum.GetValues(typeof(RepetitionDifficulty))
-           .Cast<RepetitionDifficulty>()
-           .Where(d => d != RepetitionDifficulty.Unknown) 
-           .ToDictionary(
-               k => k,
-               v => v.ToString()
-           );
+            .Cast<RepetitionDifficulty>()
+            .Where(x => x != RepetitionDifficulty.Unknown)
+            .Select(x => x.GetDisplayName())
+            .ToList();
 
-        public Dictionary<RepetitionDifficulty, string> DifficultyClasses { get; } = new()
+        public async Task<IActionResult> OnGet()
         {
-            [RepetitionDifficulty.Warmup] = "difficulty-1",
-            [RepetitionDifficulty.Easy] = "difficulty-2",
-            [RepetitionDifficulty.Moderate] = "difficulty-3",
-            [RepetitionDifficulty.Difficult] = "difficulty-4",
-            [RepetitionDifficulty.Extreme] = "difficulty-5",
-            [RepetitionDifficulty.Failed] = "difficulty-6"
-        };
+            IRequireLogin iRequireLogin = this;
+            IActionResult? redirect = await iRequireLogin.TryRedirectToLogin(_userManager, User);
 
-        public void OnGet()
-        {
+            return redirect;
         }
     }
 }

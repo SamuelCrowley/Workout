@@ -14,11 +14,11 @@ namespace MeetUp.Data.Gym
 
         public string GymSessionType { get; set; } 
         public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
+        public DateTime? EndTime { get; set; }
 
         public GymSessionEO() : base()
         {
-            EndTime = DateTime.MaxValue;
+            EndTime = null;
         }
     }
 }

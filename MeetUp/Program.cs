@@ -7,8 +7,6 @@ using MeetUp.Areas.Application.Services;
 using Microsoft.AspNetCore.Identity;
 using MeetUp.Data.User;
 using MeetUp.Filters;
-using Microsoft.AspNetCore.SignalR; // Important
-using Microsoft.Azure.SignalR;     // Important
 
 namespace MeetUp
 {
@@ -49,7 +47,7 @@ namespace MeetUp
             else
             {
                 builder.Services.AddSignalR();
-                //builder.Services.AddSignalR().AddAzureSignalR(); SEC 25-Apr-2025 - If scaling was involved
+                //builder.Services.AddSignalR().AddAzureSignalR(); SEC 25-Apr-2025 - won't be necessary, unless scaling became a concern
             }
 
             WebApplication app = builder.Build();
