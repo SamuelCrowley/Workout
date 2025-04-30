@@ -1,8 +1,11 @@
 class Chat {
     static initialize(connection) {
-        // Static properties initialization
         this.connection = connection;
         this.config = {};
+
+        document.getElementById("sendMessageBtn").addEventListener("click", () => {
+            Chat.sendMessage();
+        });
 
         this.bindEvents();
         this.startConnection();
@@ -22,7 +25,6 @@ class Chat {
     static async startConnection() {
         try {
             await this.connection.start();
-            console.log("SignalR Connected.");
 
             this.connection.on("ReceiveMessage", (user, message, color) => {
                 const messagesList = document.getElementById("messagesList");

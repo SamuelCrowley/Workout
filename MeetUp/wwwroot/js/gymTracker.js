@@ -784,17 +784,4 @@ class GymTracker {
         document.getElementById('historyLoading').style.display = show ? 'block' : 'none';
         document.getElementById('historyContent').style.display = show ? 'none' : 'block';
     }
-
-    //static chatToggle() {
-    //    document.getElementById('toggleChatBtn').addEventListener('click', function () {
-    //        const icon = this.querySelector('i');
-    //        if (icon.classList.contains('bi-chat-dots')) {
-    //            icon.classList.remove('bi-chat-dots');
-    //            icon.classList.add('bi-x');
-    //        } else {
-    //            icon.classList.remove('bi-x');
-    //            icon.classList.add('bi-chat-dots');
-    //        }
-    //    });
-    //}
 }
