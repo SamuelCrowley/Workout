@@ -47,11 +47,44 @@ class GymTracker {
         });
 
         document.getElementById('viewHistoryBtn')?.addEventListener('click', async () => {
-            const modal = new bootstrap.Modal(document.getElementById('historyModal'));
-            modal.show();
-            document.getElementById('workoutDetails').style.display = 'none';
+            const historyModalEl = document.getElementById('historyModal');
 
-            await this.loadWorkoutHistory();
+            if (historyModalEl.dataset.processing === 'true') {
+                return;
+            }
+
+            historyModalEl.dataset.processing = 'true';
+
+            let modal = bootstrap.Modal.getInstance(historyModalEl);
+            if (!modal) {
+                modal = new bootstrap.Modal(historyModalEl, {
+                    keyboard: true,  
+                    backdrop: true   
+                });
+            }
+
+            const cleanup = () => {
+                document.querySelectorAll('.modal-backdrop').forEach(el => el.remove());
+                document.body.classList.remove('modal-open');
+                document.body.style.paddingRight = '';
+                historyModalEl.dataset.processing = 'false';
+
+                historyModalEl.removeEventListener('hidden.bs.modal', cleanup);
+            };
+
+            historyModalEl.addEventListener('hidden.bs.modal', cleanup, { once: true });
+
+            try {
+                modal.show();
+                document.getElementById('workoutDetails').style.display = 'none';
+                await this.loadWorkoutHistory();
+            } catch (error) {
+                cleanup(); 
+            } finally {
+                setTimeout(() => {
+                    historyModalEl.dataset.processing = 'false';
+                }, 500);
+            }
         });
 
         const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
@@ -706,7 +739,7 @@ class GymTracker {
                                     <div>
                                         <strong>Set</strong>
                                         <div>
-                                            ${set.reps.map(rep => `
+                                            ${set.reps.sort((a, b) => a.order - b.order).map(rep => `
                                                 <span class="badge ${rep.difficulty} me-1">
                                                     ${rep.weight}kg (${rep.difficulty})
                                                 </span>
