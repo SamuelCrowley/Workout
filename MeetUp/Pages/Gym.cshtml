@@ -25,14 +25,16 @@
            name="__RequestVerificationToken"
            value="@antiforgery.GetAndStoreTokens(HttpContext).RequestToken">
 
-    <div class="container-fluid">
-        <div class="row vh-100">
+    <div class="container-fluid vh-100">
+        <div class="row g-0 h-100">
             <!-- Chat Room -->
-            <div class="col-md-6 p-0 d-flex flex-column border-end">
+            <div class="col-md-6 d-flex flex-column border-end">
                 <div class="p-3 bg-light border-bottom">
                     <h2 class="mb-0">Chat Room</h2>
                 </div>
-                <ul id="messagesList" class="list-group flex-grow-1 overflow-auto border-start border-end px-3 py-2" style="border-radius: 0;"></ul>
+                <ul id="messagesList" class="list-group flex-grow-1 overflow-auto m-3 rounded"
+                    style="border: 1px solid #dee2e6; height: calc(100vh - 160px);">
+                </ul>
                 <div class="input-group p-3 border-top">
                     <input id="messageInput" type="text" class="form-control" placeholder="Type a message" />
                     <button id="sendMessageBtn" class="btn btn-primary">
@@ -41,7 +43,8 @@
                 </div>
             </div>
 
-            <div class="col-md-6 p-0 d-flex flex-column overflow-auto">
+            <!-- Workout Tracker -->
+            <div class="col-md-6 d-flex flex-column">
                 <div class="p-3 bg-light border-bottom">
                     <h2 class="mb-0">Workout Tracker</h2>
                 </div>
@@ -62,6 +65,7 @@
                         </div>
                     </div>
 
+                    <!-- Active Workout -->
                     <div id="activeWorkoutView" class="card m-3 shadow-sm" style="display: none;">
                         <div class="card-header bg-primary text-white p-3">
                             <div class="d-flex flex-column gap-3">
@@ -101,27 +105,37 @@
                         </div>
 
                         <div class="card-body">
-                            <div class="d-flex justify-content-between mb-3">
-                                <div class="text-center">
-                                    <h5>Duration</h5>
-                                    <h3 id="workoutTimer">00:00:00</h3>
+                            <div class="scroll-section">
+                                <div class="row mb-4 g-3">
+                                    <div class="col-4 text-center">
+                                        <div class="metric-card p-2 rounded">
+                                            <h5>Duration</h5>
+                                            <h3 id="workoutTimer">00:00:00</h3>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 text-center">
+                                        <div class="metric-card p-2 rounded">
+                                            <h5>Exercises</h5>
+                                            <h3 id="exerciseCount">0</h3>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 text-center">
+                                        <div class="metric-card p-2 rounded">
+                                            <h5>Total Sets</h5>
+                                            <h3 id="totalSets">0</h3>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="text-center">
-                                    <h5>Exercises</h5>
-                                    <h3 id="exerciseCount">0</h3>
-                                </div>
-                                <div class="text-center">
-                                    <h5>Total Sets</h5>
-                                    <h3 id="totalSets">0</h3>
+
+                                <div id="currentExercises" class="mb-4">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h5>Exercises</h5>
+                                    </div>
+                                    <div id="exercisesList" class="list-group"></div>
                                 </div>
                             </div>
 
-                            <div id="currentExercises" class="mb-4">
-                                <h5>Exercises</h5>
-                                <div id="exercisesList" class="list-group"></div>
-                            </div>
-
-                            <div class="mb-3">
+                            <div class="sticky-bottom-input">
                                 <div class="input-group">
                                     <input type="text" id="exerciseNameInput" class="form-control" placeholder="Exercise name (e.g., Bench Press)">
                                     <button id="addExerciseBtn" class="btn btn-primary">Add Exercise</button>
@@ -130,6 +144,7 @@
                         </div>
                     </div>
 
+                    <!-- Exercise Detail -->
                     <div id="exerciseDetailView" class="card m-3 shadow-sm" style="display: none;">
                         <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
                             <h4 id="exerciseDetailTitle" class="mb-0">Exercise Details</h4>
@@ -137,25 +152,30 @@
                         </div>
 
                         <div class="card-body">
-                            <div id="setsList" class="mb-3">
-                                <h5>Sets</h5>
-                                <table class="table table-striped">
-                                    <thead>
-                                        <tr>
-                                            <th>Set</th>
-                                            <th>Reps</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="setsTableBody"></tbody>
-                                </table>
+                            <div class="scroll-section">
+                                <div id="setsList" class="mb-3">
+                                    <h5>Sets</h5>
+                                    <table class="table table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Set</th>
+                                                <th>Reps</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="setsTableBody"></tbody>
+                                    </table>
+                                </div>
                             </div>
-                            <div class="d-grid">
-                                <button id="addSetBtn" class="btn btn-primary">Add New Set</button>
+                            <div class="sticky-bottom-input">
+                                <div class="d-grid">
+                                    <button id="addSetBtn" class="btn btn-primary">Add New Set</button>
+                                </div>
                             </div>
                         </div>
                     </div>
 
+                    <!-- Set Detail -->
                     <div id="setDetailView" class="card m-3 shadow-sm" style="display: none;">
                         <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
                             <h4 id="setDetailTitle" class="mb-0">Set Details</h4>
@@ -163,72 +183,52 @@
                         </div>
 
                         <div class="card-body">
-                            <div class="mb-3">
-                                <label for="setWeightInput" class="form-label">Weight (kg)</label>
-                                <input type="number" id="setWeightInput" class="form-control" min="0" step="0.5" value="20">
-                            </div>
-
-                            <div class="mb-3">
-                                <h5>Repetitions</h5>
-                                <div class="row g-3 mb-3">
-                                    <div class="col-md-3">
-                                        <label for="repCountInput" class="form-label">Number of Reps</label>
-                                        <select id="repCountInput" class="form-select">
-                                            @for (int i = 1; i <= 20; i++)
-                                            {
-                                                <option value="@i" selected="@(i == 6)">@i</option>
-                                            }
-                                        </select>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label for="defaultDifficultyInput" class="form-label">Default Difficulty</label>
-                                        <select id="defaultDifficultyInput" class="form-select">
-                                            @foreach (var difficulty in Enum.GetValues(typeof(RepetitionDifficulty)))
-                                            {
-                                                @if (difficulty.ToString() != "Unknown")
-                                                {
-                                                    <option value="@difficulty" selected="@(difficulty.ToString() == "Moderate")">
-                                                        @difficulty
-                                                    </option>
-                                                }
-                                            }
-                                        </select>
-                                    </div>
-                                    <div class="col-md-3 d-flex align-items-end">
-                                        <button id="addRepsBtn" class="btn btn-primary w-100">Add Reps</button>
-                                    </div>
-                                    <div class="col-md-3 d-flex align-items-end">
-                                        <button id="clearRepsBtn" class="btn btn-outline-danger w-100">Clear All</button>
-                                    </div>
+                            <div class="scroll-section">
+                                <div class="mb-3">
+                                    <label for="setWeightInput" class="form-label">Weight (kg)</label>
+                                    <input type="number" id="setWeightInput" class="form-control" min="0" step="0.5" value="20">
                                 </div>
-                                <div id="repsList" class="list-group mb-3"></div>
-                            </div>
-                            <div class="d-grid">
-                                <button id="saveSetBtn" class="btn btn-success">Save Set</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <div class="col-md-6 order-1 order-md-2 p-0">
-                <div class="collapse" id="chatCollapse">
-                    <div class="d-flex flex-column h-100">
-                        <div class="p-3 bg-light flex-grow-1">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h2 class="mb-0">Chat Room</h2>
-                                <button class="btn btn-sm btn-secondary"
-                                        data-bs-toggle="collapse"
-                                        data-bs-target="#chatCollapse">
-                                    <i class="bi bi-x"></i>
-                                </button>
+                                <div class="mb-3">
+                                    <h5>Repetitions</h5>
+                                    <div class="row g-3 mb-3">
+                                        <div class="col-md-3">
+                                            <label for="repCountInput" class="form-label">Number of Reps</label>
+                                            <select id="repCountInput" class="form-select">
+                                                @for (int i = 1; i <= 20; i++)
+                                                {
+                                                    <option value="@i" selected="@(i == 6)">@i</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="defaultDifficultyInput" class="form-label">Default Difficulty</label>
+                                            <select id="defaultDifficultyInput" class="form-select">
+                                                @foreach (var difficulty in Enum.GetValues(typeof(RepetitionDifficulty)))
+                                                {
+                                                    @if (difficulty.ToString() != "Unknown")
+                                                    {
+                                                        <option value="@difficulty" selected="@(difficulty.ToString() == "Moderate")">
+                                                            @difficulty
+                                                        </option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="col-md-3 d-flex align-items-end">
+                                            <button id="addRepsBtn" class="btn btn-primary w-100">Add Reps</button>
+                                        </div>
+                                        <div class="col-md-3 d-flex align-items-end">
+                                            <button id="clearRepsBtn" class="btn btn-outline-danger w-100">Clear All</button>
+                                        </div>
+                                    </div>
+                                    <div id="repsList" class="list-group mb-3"></div>
+                                </div>
                             </div>
-                            <ul id="messagesList" class="list-group mb-3" style="height: calc(100vh - 200px); overflow-y: auto;"></ul>
-                            <div class="input-group">
-                                <input id="messageInput" type="text" class="form-control" placeholder="Type a message" />
-                                <button class="btn btn-primary" onclick="sendMessage()">
-                                    <i class="bi bi-send"></i>
-                                </button>
+                            <div class="sticky-bottom-input">
+                                <div class="d-grid">
+                                    <button id="saveSetBtn" class="btn btn-success">Save Set</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -237,7 +237,8 @@
         </div>
     </div>
 
-    <div class="position-fixed" style="bottom: 100px; right: 20px; z-index: 1000;">
+    <!-- View Workout History Button -->
+    <div class="position-fixed" style="bottom: 20px; right: 100px; z-index: 1000;">
         <button id="viewHistoryBtn"
                 class="btn btn-info btn-lg rounded-circle"
                 style="width: 60px; height: 60px;"
@@ -248,6 +249,7 @@
         </button>
     </div>
 
+    <!-- Workout History Modal -->
     <div class="modal fade" id="historyModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -285,16 +287,26 @@
 
             #messagesList {
                 list-style-type: none;
-                margin: 0;
                 padding: 0;
-                overflow-y: auto;
+                border: 1px solid #dee2e6;
+                border-radius: 0.375rem;
             }
 
             .list-group-item {
-                margin-bottom: 8px;
-                padding: 8px;
+                margin: 2px 0;
+                padding: 0.75rem 1.25rem;
                 background-color: #f8f9fa;
                 border-radius: 4px;
+            }
+
+            .metric-card {
+                background-color: #f8f9fa;
+                border: 1px solid #dee2e6;
+                transition: all 0.2s;
+            }
+
+            .metric-card:hover {
+                background-color: #e9ecef;
             }
 
             .difficulty-badge {
@@ -306,12 +318,35 @@
                 display: inline-block;
             }
 
-            .Warmup { background-color: #0dcaf0; color: white; }
-            .Easy { background-color: #198754; color: white; }
-            .Moderate { background-color: #ffc107; color: black; }
-            .Difficult { background-color: #fd7e14; color: white; }
-            .Extreme { background-color: #dc3545; color: white; }
-            .Failed { background-color: #000000; color: white; }
+            .Warmup {
+                background-color: #0dcaf0;
+                color: white;
+            }
+
+            .Easy {
+                background-color: #198754;
+                color: white;
+            }
+
+            .Moderate {
+                background-color: #ffc107;
+                color: black;
+            }
+
+            .Difficult {
+                background-color: #fd7e14;
+                color: white;
+            }
+
+            .Extreme {
+                background-color: #dc3545;
+                color: white;
+            }
+
+            .Failed {
+                background-color: #000000;
+                color: white;
+            }
 
             #workoutTimer, #restTimerDisplay {
                 font-family: 'Courier New', monospace;
@@ -320,6 +355,28 @@
 
             #restTimerContainer {
                 min-width: 280px;
+            }
+
+            .scroll-section {
+                max-height: 50vh;
+                overflow-y: auto;
+                margin-bottom: 15px;
+                border: 1px solid #dee2e6;
+                border-radius: 0.375rem;
+                padding: 10px;
+            }
+
+            .sticky-bottom-input {
+                position: sticky;
+                bottom: 0;
+                background: white;
+                padding: 10px 0;
+                border-top: 1px solid #dee2e6;
+                z-index: 1;
+            }
+
+            #historyModal {
+                z-index: 9999;
             }
         </style>
     }

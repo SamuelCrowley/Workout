@@ -236,7 +236,9 @@ class GymTracker {
 
         try {
             const response = await this.callApi(`endWorkout/${this.state.currentSessionId}`, 'POST');
-            if (!response.success) throw new Error(response.message);
+            if (!response.success) {
+                throw new Error(response.message);
+            }
 
             this.stopTimer();
             this.stopRestTimer();
@@ -340,7 +342,9 @@ class GymTracker {
 
         try {
             const response = await this.callApi(`addExercise/${this.state.currentSessionId}`, 'POST', exerciseName);
-            if (!response.success) throw new Error(response.message);
+            if (!response.success) {
+                throw new Error(response.message);
+            }
 
             this.state.exercises.push({
                 id: response.exerciseId,
@@ -360,12 +364,17 @@ class GymTracker {
 
         try {
             const response = await this.callApi(`deleteExercise/${exerciseId}`, 'DELETE');
-            if (!response.success) throw new Error(response.message);
+            if (!response.success) {
+                throw new Error(response.message);
+            }
 
             this.state.exercises = this.state.exercises.filter(ex => ex.id !== exerciseId);
             this.updateExerciseCount();
             this.renderExercisesList();
-            if (this.state.currentExerciseId === exerciseId) this.backToWorkout();
+
+            if (this.state.currentExerciseId === exerciseId) {
+                this.backToWorkout();
+            }
         } catch (error) {
             alert("Error deleting exercise: " + error.message);
         }
@@ -373,7 +382,9 @@ class GymTracker {
 
     static viewExerciseDetails(exerciseId) {
         const exercise = this.state.exercises.find(ex => ex.id === exerciseId);
-        if (!exercise) return;
+        if (!exercise) {
+            return;
+        }
         this.state.currentExerciseId = exerciseId;
         document.getElementById("exerciseDetailTitle").textContent = exercise.name;
         document.getElementById("activeWorkoutView").style.display = "none";
@@ -417,7 +428,9 @@ class GymTracker {
 
     static updateRepDifficulty(repId) {
         const repIndex = this.state.currentReps.findIndex(rep => rep.id === repId);
-        if (repIndex === -1) return;
+        if (repIndex === -1) {
+            return;
+        }
 
         const currentIndex = this.config.difficultyOptions.indexOf(this.state.currentReps[repIndex].difficulty);
         const nextIndex = (currentIndex + 1) % this.config.difficultyOptions.length;
@@ -427,7 +440,9 @@ class GymTracker {
 
     static updateRepWeight(repId) {
         const repIndex = this.state.currentReps.findIndex(rep => rep.id === repId);
-        if (repIndex === -1) return;
+        if (repIndex === -1) {
+            return;
+        }
 
         const currentWeight = this.state.currentReps[repIndex].weight || document.getElementById("setWeightInput").value;
         const newWeight = prompt("Enter new weight (kg):", currentWeight);
@@ -517,13 +532,19 @@ class GymTracker {
 
         try {
             const response = await this.callApi(`deleteSet/${setId}`, 'DELETE');
-            if (!response.success) throw new Error(response.message);
+            if (!response.success) {
+                throw new Error(response.message);
+            }
 
             const exerciseIndex = this.state.exercises.findIndex(ex => ex.id === exerciseId);
-            if (exerciseIndex === -1) return;
+            if (exerciseIndex === -1) {
+                return;
+            }
 
             const setIndex = this.state.exercises[exerciseIndex].sets.findIndex(set => set.id === setId);
-            if (setIndex === -1) return;
+            if (setIndex === -1) {
+                return;
+            }
 
             this.state.exercises[exerciseIndex].sets.splice(setIndex, 1);
             this.updateExerciseCount();
@@ -598,7 +619,10 @@ class GymTracker {
 
     static renderSetsList() {
         const exercise = this.state.exercises.find(ex => ex.id === this.state.currentExerciseId);
-        if (!exercise) return;
+        if (!exercise) {
+            return;
+        }
+
         const container = document.getElementById("setsTableBody");
         container.innerHTML = "";
         if (exercise.sets.length === 0) {
@@ -671,7 +695,9 @@ class GymTracker {
         try {
             this.showHistoryLoading(true);
             const response = await this.callApi('workoutHistory');
-            if (!response.success) throw new Error(response.message);
+            if (!response.success) {
+                throw new Error(response.message);
+            }
 
             const sessionsList = document.getElementById('workoutSessionsList');
             sessionsList.innerHTML = '';
@@ -715,7 +741,9 @@ class GymTracker {
         try {
             this.showHistoryLoading(true);
             const response = await this.callApi(`workoutDetails/${sessionId}`);
-            if (!response.success) throw new Error(response.message);
+            if (!response.success) {
+                throw new Error(response.message);
+            }
 
             const workoutDetails = document.getElementById('workoutDetails');
             workoutDetails.dataset.sessionId = sessionId;
@@ -769,7 +797,9 @@ class GymTracker {
 
         try {
             const response = await this.callApi(`deleteSession/${sessionId}`, 'DELETE');
-            if (!response.success) throw new Error(response.message);
+            if (!response.success) {
+                throw new Error(response.message);
+            }
 
             alert('Session deleted successfully');
             await this.loadWorkoutHistory();
@@ -784,7 +814,9 @@ class GymTracker {
 
         try {
             const response = await this.callApi(`deleteExercise/${exerciseId}`, 'DELETE');
-            if (!response.success) throw new Error(response.message);
+            if (!response.success) {
+                throw new Error(response.message);
+            }
 
             alert('Exercise deleted successfully');
             const workoutDetails = document.getElementById('workoutDetails');
@@ -801,7 +833,9 @@ class GymTracker {
 
         try {
             const response = await this.callApi(`deleteSet/${setId}`, 'DELETE');
-            if (!response.success) throw new Error(response.message);
+            if (!response.success) {
+                throw new Error(response.message);
+            }
 
             alert('Set deleted successfully');
             const workoutDetails = document.getElementById('workoutDetails');

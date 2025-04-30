@@ -92,7 +92,8 @@ namespace MeetUp.Controllers.Gym
                                 {
                                     id = x.ClassRef,
                                     weight = x.Weight,
-                                    difficulty = x.Difficulty.ToString()
+                                    difficulty = x.Difficulty.ToString(),
+                                    order = x.Order,
                                 }).ToList()
                             }).ToList()
                         }).ToList()
