@@ -3,6 +3,7 @@ class Chat {
         this.connection = connection;
         this.config = {};
 
+        document.getElementById("messagesList").classList.add("loaded");
         document.getElementById("sendMessageBtn").addEventListener("click", () => {
             Chat.sendMessage();
         });
@@ -28,12 +29,31 @@ class Chat {
 
             this.connection.on("ReceiveMessage", (user, message, color) => {
                 const messagesList = document.getElementById("messagesList");
-                if (!messagesList) return;
+                if (!messagesList) {
+                    return;
+                }
 
-                const msg = document.createElement("li");
-                msg.className = "list-group-item";
-                msg.innerHTML = `<strong style="color:${color}">${user}:</strong> ${message}`;
-                messagesList.appendChild(msg);
+                const container = document.querySelector('.messages-container');
+                if (!container) {
+                    return;
+                }
+                const attribute = container.attributes[0]?.name;
+
+                const li = document.createElement("li");
+                li.className = "list-group-item message-item";
+                li.setAttribute(attribute, "");
+
+                const strong = document.createElement("strong");
+                strong.style.color = color;
+                strong.textContent = `${user}: `; 
+
+                const messageText = document.createTextNode(message);
+
+                li.appendChild(strong);
+                li.appendChild(messageText); 
+
+                messagesList.appendChild(li);
+
                 messagesList.scrollTo({
                     top: messagesList.scrollHeight,
                     behavior: 'smooth'
@@ -48,7 +68,9 @@ class Chat {
     static async sendMessage() {
         const messageInput = document.getElementById("messageInput");
         const message = messageInput.value.trim();
-        if (!message) return;
+        if (!message) {
+            return;
+        }
 
         try {
             await this.connection.invoke("SendMessage", message);

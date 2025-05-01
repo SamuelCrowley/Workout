@@ -88,6 +88,7 @@ namespace MeetUp.Controllers.Gym
                             sets = x.GymSetEOs.Select(x => new
                             {
                                 id = x.ClassRef,
+                                startTime = x.StartTime,
                                 reps = x.GymRepetitionEOs.Select(x => new
                                 {
                                     id = x.ClassRef,
