@@ -1,13 +1,59 @@
-﻿/* ===== Base Styles ===== */
+﻿a {
+    color: #0077cc;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+.nav-pills .nav-link.active, .nav-pills .show > .nav-link {
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
+}
+
+.border-top {
+    border-top: 1px solid #e5e5e5;
+}
+
+.border-bottom {
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow {
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy {
+    font-size: 1rem;
+    line-height: inherit;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px;
+}
+
 html, body {
     height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
     margin: 0;
     padding: 0;
+    background-color: #e9ecef; 
+    color: #343a40;
 }
 
-/* ===== Layout Structure ===== */
+.main-content-area {
+    min-height: calc(100vh - 150px);
+    height: auto; 
+}
+
 .container-fluid {
     padding-right: 0;
     padding-left: 0;
@@ -18,166 +64,444 @@ html, body {
     margin-left: 0;
 }
 
-/* ===== Messages Section ===== */
-.messages-container {
-    flex-grow: 1;
-    overflow: hidden;
-    position: relative;
-    padding-right: 1rem;
+    .row.g-0.h-100 > .col {
+        height: 100%;
+    }
+
+/* --- Workout Tracker Area (Primary Content) --- */
+/* Adjusted .col that contains the workout tracker */
+.col {
+    flex-grow: 1; /* Take up available space if in a flex container */
+    display: flex; /* Make it a flex container */
+    flex-direction: column; /* Stack contents vertically */
+    overflow-y: auto; /* Make the tracker area itself scrollable */
+    margin: 0; /* Ensure no extra margin */
+    padding: 0; /* Ensure no extra padding */
+    width: 100%; /* Take full width */
 }
 
-.messages-list {
-    position: absolute;
+/* Ensure gymTrackerContainer takes available space in the tracker area */
+#gymTrackerContainer {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* Content inside gymTrackerContainer scrolls */
+    margin: 0; /* Remove margin from gymTrackerContainer itself */
+}
+
+    /* Add padding/margin to cards/elements INSIDE gymTrackerContainer */
+    #gymTrackerContainer > .card {
+        margin: 1rem !important; /* Add margin to the main view cards */
+    }
+
+    #gymTrackerContainer .p-3 {
+        padding: 1rem !important; /* Ensure consistent padding for headers/sections */
+    }
+
+
+/* --- Chat Slide-out Panel - Restored and Adjusted --- */
+.chat-slideout-panel {
+    position: fixed; /* Fixed position relative to viewport */
     top: 0;
-    left: 0.75rem;
-    right: 0.75rem;
-    bottom: 0;
-    height: auto;
+    right: -350px; /* Default: Start off-screen (adjust width) */
+    width: 350px; /* Set the width of the panel */
+    height: 100%; /* Take full height of the viewport */
+    background-color: #ffffff; /* White background for the panel */
+    box-shadow: -5px 0 15px rgba(0,0,0,0.1); /* Add a shadow */
+    transition: right 0.3s ease; /* Smooth slide-in animation */
+    z-index: 1040; /* Higher than modal backdrop (1040) */
+    display: flex; /* Make it a flex container */
+    flex-direction: column; /* Stack header and content vertically */
+    visibility: hidden;
+}
+
+    .chat-slideout-panel.chat-open {
+        right: 0; /* Slide into view when chat-open class is present */
+        visibility: visible;
+    }
+
+.chat-panel-header {
+    flex-shrink: 0; /* Prevent header from shrinking */
+}
+
+.chat-panel-content {
+    flex-grow: 1; /* Let content area take available space */
+    display: flex; /* Make it a flex container */
+    flex-direction: column; /* Stack messages and input */
+    overflow-y: hidden; /* Hide direct overflow - let children scroll */
+}
+
+
+/* --- Fixed Bottom Buttons Container - Holds History and Chat Toggle --- */
+.fixed-bottom-buttons {
+    position: fixed;
+    bottom: 20px;
+    right: 20px; /* Position the container from the right */
+    z-index: 1000; /* Ensure buttons are on top */
+    display: flex; /* Arrange children side-by-side */
+    gap: 10px; /* Space between buttons */
+    justify-content: flex-end; /* Align buttons to the right within the container */
+    align-items: center; /* Vertically center buttons */
+    flex-wrap: wrap; /* Allow buttons to wrap if screen is too thin */
+    max-width: calc(100% - 40px); /* Prevent container from stretching too wide */
+}
+
+    /* Ensure buttons within this container don't have conflicting fixed/absolute positions */
+    .fixed-bottom-buttons .btn {
+        position: static; /* Override potential fixed/absolute on buttons */
+        flex-shrink: 0; /* Prevent buttons from shrinking */
+        /* Button size is inline style in HTML */
+    }
+
+
+/* --- Overlay for Chat --- */
+.chat-overlay {
+    position: fixed; /* Fixed position */
+    top: 0;
+    left: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+    z-index: 1035; /* Between main content/buttons and panel */
+    display: none; /* Initially hidden */
+    cursor: pointer;
+}
+
+    .chat-overlay.active {
+        display: block; /* Show when chat is open */
+    }
+
+
+/* --- Messages Section (Adjusted for new panel structure) --- */
+/* This section is ONLY inside #chatPanel now, so its styles are simpler */
+#chatPanel .messages-container { /* Target specifically inside the panel */
+    flex-grow: 1;
+    overflow-y: auto; /* Make message list scrollable */
+    padding: 0.75rem;
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+#chatPanel .messages-list { /* Target specifically inside the panel */
     list-style-type: none;
-    overflow-y: auto;
-    border: 1px solid #dee2e6;
-    border-radius: 0.375rem;
-    padding: 0.5rem 0;
+    padding: 0;
     margin: 0;
     scrollbar-width: thin;
     scrollbar-color: #dee2e6 #f8f9fa;
 }
 
-    .messages-list > .list-group-item.message-item {
-        margin: 0.5rem 0.75rem;
+    #chatPanel .messages-list > .list-group-item.message-item { /* Target specifically inside the panel */
+        margin-bottom: 0.5rem;
         padding: 0.75rem 1rem;
         background-color: #f8f9fa;
         border-radius: 0.25rem;
-        border: 1px solid aquamarine;
+        border: 1px solid #dee2e6;
         box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         transition: all 0.2s ease;
+        word-break: break-word;
     }
 
-        .messages-list > .list-group-item.message-item strong {
+        #chatPanel .messages-list > .list-group-item.message-item:last-child {
+            margin-bottom: 0;
+        }
+
+        #chatPanel .messages-list > .list-group-item.message-item strong {
             font-weight: 600;
             margin-right: 0.5rem;
         }
 
-    .messages-list::-webkit-scrollbar {
+    #chatPanel .messages-list::-webkit-scrollbar {
         width: 8px;
     }
 
-    .messages-list::-webkit-scrollbar-thumb {
-        background-color: rgba(0,0,0,0.1);
+    #chatPanel .messages-list::-webkit-scrollbar-thumb {
+        background-color: rgba(0,0,0,0.2);
         border-radius: 4px;
     }
 
-/* ===== Workout Tracker Styles ===== */
+/* Chat Input Group - Also ONLY inside #chatPanel now */
+#chatPanel .input-group { /* Target specifically inside the panel */
+    /* Standard Bootstrap input-group styles apply */
+    /* p-3 border-top flex-shrink-0 are on the div in HTML */
+}
+
+
+/* --- Workout Tracker Styles (Kept largely the same, adjust margins/padding) --- */
+/* #gymTrackerContainer is flex-grow-1 d-flex flex-column overflow-auto in HTML */
+/* Styles within workout views kept */
+
 .metric-card {
-    background-color: #f8f9fa;
+    background-color: #ffffff;
     border: 1px solid #dee2e6;
     transition: all 0.2s;
+    margin-bottom: 1rem;
 }
 
     .metric-card:hover {
-        background-color: #e9ecef;
+        background-color: #f8f9fa;
     }
 
 .scroll-section {
-    max-height: 50vh;
+    flex-grow: 1;
     overflow-y: auto;
-    margin-bottom: 15px;
+    padding: 1rem;
     border: 1px solid #dee2e6;
     border-radius: 0.375rem;
-    padding: 10px;
+    margin-bottom: 1rem;
+    background-color: #ffffff;
 }
 
-/* ===== Timer Styles ===== */
-#workoutTimer,
-#restTimerDisplay {
+/* --- Timer Styles --- */
+#workoutTimer, #restTimerDisplay {
     font-family: 'Courier New', monospace;
     font-weight: bold;
 }
 
 #restTimerContainer {
-    min-width: 280px;
+    min-width: auto;
 }
 
-/* ===== Difficulty Badges ===== */
-badge.difficulty-badge {
-    min-width: 100px;
+/* --- Difficulty Badges --- */
+.badge.difficulty-badge {
+    min-width: 80px;
     text-align: center;
-    padding: 5px;
-    border-radius: 4px;
+    padding: 0.35em 0.65em;
+    border-radius: 0.25rem;
     display: inline-block;
+    font-size: 0.8em;
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
+    vertical-align: baseline;
+    cursor: pointer;
 }
 
-::deep span.badge.difficulty-badge.Warmup {
-    background-color: lightcyan;
-    color: black;
+span.badge.difficulty-badge.Warmup {
+    background-color: #a1e9f7;
+    color: #000000;
 }
 
-::deep span.badge.difficulty-badge.Easy {
+span.badge.difficulty-badge.Easy {
     background-color: lawngreen;
     color: black;
 }
 
-::deep span.badge.difficulty-badge.Moderate {
+span.badge.difficulty-badge.Moderate {
     background-color: yellow;
     color: black;
 }
 
-::deep span.badge.difficulty-badge.Difficult {
+span.badge.difficulty-badge.Difficult {
     background-color: orange;
     color: black;
 }
 
-::deep span.badge.difficulty-badge.Extreme {
+span.badge.difficulty-badge.Extreme {
     background-color: darkred;
     color: white;
 }
 
-::deep span.badge.difficulty-badge.Failed {
+span.badge.difficulty-badge.Failed {
     background-color: black;
     color: white;
 }
 
-/* ===== Sticky Elements ===== */
-.anchor-bottom {
-    position: sticky;
-    bottom: 0;
-    background: white;
-    padding: 10px 0;
-    border-top: 1px solid #dee2e6;
-    z-index: 1;
-    width: calc(100% - 1.5rem);
+
+/* --- Sticky Elements / Input Areas --- */
+.workout-input-area, .set-input-area {
+    flex-shrink: 0;
+    padding: 0 1rem 1rem 1rem;
+    background-color: inherit;
 }
 
-/* ===== Modal ===== */
+
+/* --- History Modal --- */
 #historyModal {
-    z-index: 9999;
+    z-index: 1050;
 }
 
-/* ===== Mobile ===== */
-@media (max-width: 767.98px) {
-    .container-fluid {
-        height: auto !important;
-        min-height: 100vh;
+
+/* --- Force Hide Class (For JS control) --- */
+.force-hide {
+    display: none !important;
+}
+
+
+/* --- Responsive Adjustments --- */
+@media (min-width: 992px) { /* >= Bootstrap 'lg' breakpoint */
+    /* On wide screens, the layout is columns */
+    .col {
+        /* No change - flex properties handle splitting space with other cols */
+        /* Workout tracker takes 100% of its column */
+    }
+
+    /* Ensure main content area uses its calculated height on wide screens */
+    .main-content-area {
+        height: calc(100vh - 150px);
+        min-height: auto; /* Reset min-height */
+        display: flex; /* Use flex to arrange columns side-by-side */
+        flex-direction: row;
+    }
+
+    /* On wide screens, the workout tracker column takes 100% height */
+    .row.g-0.h-100 > .col {
+        height: 100%;
+        padding-bottom: 0; /* Remove padding below columns on wide */
+    }
+
+    /* Fixed bottom buttons - position remains fixed, flex properties handle layout */
+    .fixed-bottom-buttons {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        left: auto; /* Position from the right */
+        justify-content: flex-end; /* Align to the right */
+        gap: 10px;
+        max-width: calc(100% - 40px); /* Prevent from stretching too wide */
+    }
+
+        .fixed-bottom-buttons .btn {
+            /* Button size remains fixed, flex-shrink 0 */
+        }
+}
+
+
+
+
+@media (max-width: 991.98px) { /* < Bootstrap 'lg' breakpoint (small screens) */
+
+    /* On small screens, the layout is stacked */
+    .main-content-area {
+        height: auto; /* Allow height to be determined by content */
+        min-height: 100vh; /* Ensure it takes at least viewport height */
+        display: block; /* Revert to block layout for stacking */
+        flex-direction: column; /* Stack children vertically */
     }
 
     .row {
         flex-direction: column;
     }
 
-    .col-md-6 {
+    /* Workout tracker column takes full width and auto height */
+    .col {
+        width: 100%;
         height: auto !important;
-        min-height: 50vh;
+        min-height: auto;
+        overflow-y: visible; /* Allow content to overflow if needed */
+        padding-bottom: 1rem; /* Add space below tracker before buttons/footer */
     }
 
-    .messages-list {
-        position: relative !important;
-        height: 50vh !important;
-        left: 0.5rem;
-        right: 0.5rem;
+    /* Chat panel is fixed and takes full viewport width */
+    .chat-slideout-panel {
+        position: fixed; /* Keep fixed */
+        top: 0;
+        right: -100vw; /* Start off-screen right, full width */
+        width: 100vw; /* Take full viewport width */
+        height: 100%; /* Keep full height */
+        box-shadow: none; /* Remove shadow */
+        transition: right 0.3s ease; /* Keep transition */
+        z-index: 1040; /* Keep z-index */
+        display: flex; /* Keep flex column layout for header/content */
+        flex-direction: column;
+        visibility: hidden;
     }
 
-    #gymTrackerContainer {
-        height: auto;
-        overflow: visible;
+        /* When chat-open class is added on small screens, slide it into view */
+        .chat-slideout-panel.chat-open {
+            right: 0; /* Slide into view */
+            visibility: visible;
+        }
+
+    /* Hide chat panel header (close button) on mobile if preferred */
+    .chat-panel-header {
+        /* display: none; */ /* Optional: hide header on mobile */
+    }
+
+    .chat-panel-content {
+        flex-grow: 1; /* Take available space */
+        display: flex; /* Flex column for messages/input */
+        flex-direction: column;
+        overflow-y: hidden; /* Let message list scroll */
+        /* height: 50vh; */ /* Optional: give chat content a fixed height on mobile */
+        padding: 0.5rem; /* Adjust padding */
+    }
+
+
+    /* Fixed bottom buttons - position remains fixed, flex properties handle layout */
+    .fixed-bottom-buttons {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        left: 20px; /* Allow container to stretch from left on small screens */
+        justify-content: flex-end; /* Still align buttons to the right within the container */
+        gap: 8px; /* Slightly less gap on small screens */
+        max-width: none; /* Remove max-width restriction on small screens */
+        visibility: visible;
+    }
+
+        .fixed-bottom-buttons .btn {
+            /* Button size remains fixed, flex-shrink 0 */
+        }
+
+    /* Overlay */
+    .chat-overlay {
+        position: fixed; /* Keep fixed */
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1035;
+        display: none; /* Initially hidden */
+    }
+
+        .chat-overlay.active {
+            display: block; /* Show when chat is open */
+        }
+
+
+    /* Adjust padding/margins for smaller screens within tracker/chat */
+    #gymTrackerContainer > .card {
+        margin: 0.5rem !important;
+    }
+
+    #gymTrackerContainer .p-3 {
+        padding: 0.5rem !important;
+    }
+
+    .workout-input-area,
+    .set-input-area {
+        padding: 0.5rem;
+    }
+
+    /* Adjust messages container and list styles for layout within chatPanel */
+    #chatPanel .messages-container {
+        padding: 0.5rem; /* Adjust padding for panel content */
+        flex-grow: 1;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column-reverse;
+    }
+
+    #chatPanel .messages-list {
+        position: relative; /* Revert to relative positioning inside the panel */
+        left: auto;
+        right: auto;
+        top: auto;
+        bottom: auto;
+        height: auto; /* Allow height to be determined by content/overflow */
+        margin: 0;
+        padding: 0.5rem 0;
+        overflow-y: auto; /* Ensure list is scrollable */
+        border: none; /* Remove border if the container has it */
+    }
+
+        #chatPanel .messages-list > .list-group-item.message-item {
+            margin: 0.5rem 0; /* Adjust margin */
+            border: 1px solid #dee2e6;
+        }
+
+    #chatPanel .input-group {
+        padding: 0.5rem; /* Adjust input padding */
     }
 }

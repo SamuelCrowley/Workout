@@ -6,7 +6,7 @@
 @inject IAntiforgery antiforgery
 @model GymModel
 @{
-    ViewData["Title"] = "Chat";
+    ViewData["Title"] = "Chat & Workout";
 }
 
 <head>
@@ -14,10 +14,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - MeetUp</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 
 <body>
@@ -25,54 +25,37 @@
            name="__RequestVerificationToken"
            value="@antiforgery.GetAndStoreTokens(HttpContext).RequestToken">
 
-    <div class="container-fluid px-0" style="height: calc(100vh - 150px);">
+    <div class="container-fluid px-0 main-content-area">
         <div class="row g-0 h-100 flex-md-row flex-column">
-            <!-- Chat Room -->
-            <div class="col-md-6 d-flex flex-column h-100">
+
+            <div class="col d-flex flex-column h-100">
                 <div class="p-3 bg-light border-bottom flex-shrink-0">
-                    <h2 class="mb-0">Chat Room</h2>
-                </div>
-
-                <!-- Messages Container -->
-                <div class="messages-container">
-                    <ul id="messagesList" class="messages-list">
-                    </ul>
-                </div>
-
-                <!-- Input Group - Anchor to bottom -->
-                <div class="input-group p-3 border-top flex-shrink-0">
-                    <input id="messageInput" type="text" class="form-control" placeholder="Type a message" />
-                    <button id="sendMessageBtn" class="btn btn-primary">
-                        <i class="bi bi-send"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Workout Tracker -->
-            <div class="col-md-6 d-flex flex-column">
-                <div class="p-3 bg-light border-bottom">
                     <h2 class="mb-0">Workout Tracker</h2>
                 </div>
-                <div id="gymTrackerContainer" class="flex-grow-1 overflow-auto">
-                    <div id="initialView" class="card m-3 shadow-sm">
-                        <div class="card-body text-center">
+                <div id="gymTrackerContainer" class="flex-grow-1 d-flex flex-column overflow-auto">
+                    <div id="workoutContextTitle" class="p-3 bg-white border-bottom flex-shrink-0 force-hide">
+                        <h5 class="mb-0" id="currentWorkoutContext">Workout Tracker</h5>
+                    </div>
+
+                    <div id="initialView" class="card m-3 shadow-sm flex-grow-1 force-hide">
+                        <div class="card-body text-center d-flex flex-column">
                             <h4 class="card-title">Ready to work out?</h4>
                             <p class="card-text">Track your progress by starting a workout session.</p>
-                            <div class="mb-3" id="workoutNameContainer" style="display: none;">
+                            <div class="mb-3 mt-auto" id="workoutNameContainer" style="display: none;">
+                                <label for="workoutNameInput" class="visually-hidden">Workout name</label>
                                 <input type="text" id="workoutNameInput" class="form-control" placeholder="Workout name (e.g., Push, Pull, Legs)">
                             </div>
-                            <button class="btn btn-success btn-lg" id="startWorkoutBtn" style="display: none;">
+                            <button class="btn btn-success btn-lg mt-2" id="startWorkoutBtn" style="display: none;">
                                 <i class="bi bi-play-circle"></i> Start Workout
                             </button>
-                            <button class="btn btn-info btn-lg" id="createGymUserBtn" style="display: none;">
+                            <button class="btn btn-info btn-lg mt-2" id="createGymUserBtn" style="display: none;">
                                 Create Gym Account
                             </button>
                         </div>
                     </div>
 
-                    <!-- Active Workout -->
-                    <div id="activeWorkoutView" class="card m-3 shadow-sm" style="display: none;">
-                        <div class="card-header bg-primary text-white p-3">
+                    <div id="activeWorkoutView" class="card m-3 shadow-sm d-flex flex-column flex-grow-1 force-hide">
+                        <div class="card-header bg-primary text-white p-3 flex-shrink-0">
                             <div class="d-flex flex-column gap-3">
                                 <div class="card bg-light">
                                     <div class="card-body d-flex align-items-center justify-content-between px-3 py-2">
@@ -80,7 +63,7 @@
                                         <button id="endWorkoutBtn" class="btn btn-danger btn-sm">End Workout</button>
                                     </div>
                                 </div>
-                                <div id="restTimerContainer" class="card bg-light" style="display: none;">
+                                <div id="restTimerContainer" class="card bg-light flex-shrink-0" style="display: none;">
                                     <div class="card-body d-flex align-items-center justify-content-between px-3 py-2">
                                         <div class="d-flex align-items-center gap-2">
                                             <span id="restTimerDisplay">Rest: 00:00</span>
@@ -94,6 +77,7 @@
                                                     <i class="bi bi-stop-fill"></i>
                                                 </button>
                                             </div>
+                                            <label for="restTimerDuration" class="visually-hidden">Rest Timer Duration</label>
                                             <select id="restTimerDuration" class="form-select form-select-sm" style="width: 80px;">
                                                 <option value="30">0:30</option>
                                                 <option value="60">1:00</option>
@@ -108,9 +92,8 @@
                             </div>
                         </div>
 
-                        <!-- Workout Metrics -->
-                        <div class="workout-Metrics" id="exerciseMetricViews">
-                            <div class="scroll-section">
+                        <div class="workout-Metrics flex-grow-1 d-flex flex-column" id="exerciseMetricViews">
+                            <div class="p-3 flex-shrink-0">
                                 <div class="row mb-4 g-2 g-md-3">
                                     <div class="col-12 col-sm-4 text-center mb-2 mb-sm-0">
                                         <div class="metric-card h-100 p-2 rounded d-flex flex-column justify-content-center">
@@ -133,7 +116,9 @@
                                         </div>
                                     </div>
                                 </div>
+                            </div>
 
+                            <div class="scroll-section flex-grow-1">
                                 <div id="currentExercises" class="mb-4">
                                     <div class="d-flex justify-content-between align-items-center mb-3">
                                         <h5>Exercises</h5>
@@ -142,23 +127,22 @@
                                 </div>
                             </div>
 
-                            <div class="anchor-bottom">
-                                <div class="input-group">
-                                    <input type="text" id="exerciseNameInput" class="form-control" placeholder="Exercise name (e.g., Bench Press)">
-                                    <button id="addExerciseBtn" class="btn btn-primary">Add Exercise</button>
-                                </div>
+                            <div class="input-group flex-shrink-0 workout-input-area">
+                                <label for="exerciseNameInput" class="visually-hidden">Exercise name</label>
+                                <input type="text" id="exerciseNameInput" class="form-control" placeholder="Exercise name (e.g., Bench Press)">
+                                <button id="addExerciseBtn" class="btn btn-primary">Add Exercise</button>
                             </div>
                         </div>
+                    </div>
 
-                    <!-- Exercise Detail -->
-                    <div id="exerciseDetailView" class="card m-3 shadow-sm" style="display: none;">
-                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <div id="exerciseDetailView" class="card m-3 shadow-sm d-flex flex-column flex-grow-1 force-hide">
+                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center flex-shrink-0">
                             <h4 id="exerciseDetailTitle" class="mb-0">Exercise Details</h4>
                             <button id="backToWorkoutBtn" class="btn btn-light btn-sm">Back to Workout</button>
                         </div>
 
-                        <div class="card-body">
-                            <div class="scroll-section">
+                        <div class="card-body d-flex flex-column">
+                            <div class="scroll-section flex-grow-1">
                                 <div id="setsList" class="mb-3">
                                     <h5>Sets</h5>
                                     <table class="table table-striped">
@@ -173,23 +157,20 @@
                                     </table>
                                 </div>
                             </div>
-                            <div class="sticky-bottom-input">
-                                <div class="d-grid">
-                                    <button id="addSetBtn" class="btn btn-primary">Add New Set</button>
-                                </div>
+                            <div class="d-grid flex-shrink-0 set-input-area">
+                                <button id="addSetBtn" class="btn btn-primary">Add New Set</button>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Set Detail -->
-                    <div id="setDetailView" class="card m-3 shadow-sm" style="display: none;">
-                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <div id="setDetailView" class="card m-3 shadow-sm d-flex flex-column flex-grow-1 force-hide">
+                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center flex-shrink-0">
                             <h4 id="setDetailTitle" class="mb-0">Set Details</h4>
                             <button id="backToExerciseBtn" class="btn btn-light btn-sm">Back to Exercise</button>
                         </div>
 
-                        <div class="card-body">
-                            <div class="scroll-section">
+                        <div class="card-body d-flex flex-column">
+                            <div class="scroll-section flex-grow-1">
                                 <div class="mb-3">
                                     <label for="setWeightInput" class="form-label">Weight (kg)</label>
                                     <input type="number" id="setWeightInput" class="form-control" min="0" step="0.5" value="20">
@@ -231,10 +212,8 @@
                                     <div id="repsList" class="list-group mb-3"></div>
                                 </div>
                             </div>
-                            <div class="sticky-bottom-input">
-                                <div class="d-grid">
-                                    <button id="saveSetBtn" class="btn btn-success">Save Set</button>
-                                </div>
+                            <div class="d-grid flex-shrink-0 set-input-area">
+                                <button id="saveSetBtn" class="btn btn-success">Save Set</button>
                             </div>
                         </div>
                     </div>
@@ -243,8 +222,7 @@
         </div>
     </div>
 
-    <!-- View Workout History Button -->
-    <div class="position-fixed" style="bottom: 20px; right: 20px; z-index: 1000;">
+    <div class="fixed-bottom-buttons">
         <button id="viewHistoryBtn"
                 class="btn btn-info btn-lg rounded-circle"
                 style="width: 60px; height: 60px;"
@@ -253,9 +231,16 @@
                 title="View Workout History">
             <i class="bi bi-clock-history"></i>
         </button>
+
+        <button id="chatToggleBtn"
+                class="btn btn-primary btn-lg rounded-circle"
+                style="width: 60px; height: 60px;"
+                title="Toggle Chat">
+            <i class="bi bi-chat-dots"></i>
+        </button>
     </div>
 
-    <!-- Workout History Modal -->
+
     <div class="modal fade" id="historyModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -284,6 +269,32 @@
         </div>
     </div>
 
+    <div id="chatPanel" class="chat-slideout-panel">
+        <div class="chat-panel-header p-3 bg-light border-bottom d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">Chat Room</h4>
+            <button id="chatCloseBtn" class="btn btn-sm btn-outline-secondary" title="Close Chat">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <div class="chat-panel-content d-flex flex-column h-100">
+            <div class="messages-container flex-grow-1 overflow-auto p-3">
+                <ul id="messagesList" class="messages-list list-group">
+                </ul>
+            </div>
+
+            <div class="input-group p-3 border-top flex-shrink-0">
+                <label for="messageInput" class="visually-hidden">Type your message</label>
+                <input id="messageInput" type="text" class="form-control" placeholder="Type a message" aria-label="Type a message" />
+                <button id="sendMessageBtn" class="btn btn-primary">
+                    <i class="bi bi-send"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="chatOverlay" class="chat-overlay"></div>
+
+
     @section Scripts {
         <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.5/signalr.min.js"></script>
         <script>
@@ -301,11 +312,13 @@
                 .build();
 
             document.addEventListener("DOMContentLoaded", () => {
-                Chat.initialize(connection);
+                Chat.initialize(connection); 
                 GymTracker.initialize(gymConfig);
+                Layout.initialize(); 
             });
         </script>
         <script src="~/js/chat.js" asp-append-version="true"></script>
         <script src="~/js/gymTracker.js" asp-append-version="true"></script>
+        <script src="~/js/layout.js" asp-append-version="true"></script> 
     }
 </body>
