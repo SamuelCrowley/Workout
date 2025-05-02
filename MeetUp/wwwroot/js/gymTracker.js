@@ -43,7 +43,7 @@ class GymTracker {
 
             const minutes = Math.floor(this.state.restTimerRemaining / 60).toString().padStart(2, '0');
             const seconds = (this.state.restTimerRemaining % 60).toString().padStart(2, '0');
-            document.getElementById("restTimerDisplay").textContent = `Rest: ${minutes}:${seconds}`;
+            document.getElementById("restTimerDisplay").textContent = `${minutes}:${seconds}`;
         });
 
         document.getElementById('viewHistoryBtn')?.addEventListener('click', async () => {
@@ -317,7 +317,7 @@ class GymTracker {
         const seconds = Math.floor((remaining % 60000) / 1000);
 
         document.getElementById("restTimerDisplay").textContent =
-            `Rest: ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 
         if (remaining <= 0) {
             this.stopRestTimer();
@@ -330,7 +330,7 @@ class GymTracker {
             this.state.restTimerInterval = null;
         }
         this.state.restTimerEndTime = null;
-        document.getElementById("restTimerDisplay").textContent = "Rest: 00:00";
+        document.getElementById("restTimerDisplay").textContent = "00:00";
     }
 
     static async addExercise() {
@@ -387,8 +387,7 @@ class GymTracker {
         }
         this.state.currentExerciseId = exerciseId;
         document.getElementById("exerciseDetailTitle").textContent = exercise.name;
-        //document.getElementById("activeWorkoutView").style.display = "none";
-        document.getElementById("exerciseMetricViews").style.display = "none";
+        document.getElementById("activeWorkoutView").style.display = "none";
         document.getElementById("exerciseDetailView").style.display = "block";
         document.getElementById("setDetailView").style.display = "none";
         this.renderSetsList();
@@ -679,7 +678,7 @@ class GymTracker {
     static backToWorkout() {
         document.getElementById("exerciseDetailView").style.display = "none";
         document.getElementById("setDetailView").style.display = "none";
-        document.getElementById("exerciseMetricViews").style.display = "block";
+        document.getElementById("activeWorkoutView").style.display = "block";
         this.state.currentExerciseId = null;
         this.state.currentSetId = null;
         this.renderExercisesList();
@@ -763,13 +762,13 @@ class GymTracker {
                     </div>
                     <div class="card-body">
                         <ul class="list-group">
-                            ${exercise.sets.sort((a, b) => new Date(a.startTime) - new Date(b.startTime)).map((set, index) => `
+                            ${exercise.sets.map(set => `
                                 <li class="list-group-item d-flex justify-content-between align-items-center">
                                     <div>
-                                        <strong>Set: ${++index}</strong>
+                                        <strong>Set</strong>
                                         <div>
                                             ${set.reps.sort((a, b) => a.order - b.order).map(rep => `
-                                                <span class="badge ${rep.difficulty} difficulty-badge me-1">
+                                                <span class="badge ${rep.difficulty} me-1">
                                                     ${rep.weight}kg (${rep.difficulty})
                                                 </span>
                                             `).join('')}
@@ -794,9 +793,7 @@ class GymTracker {
     }
 
     static async deleteSession(sessionId) {
-        if (!confirm('Delete this entire workout session?')) {
-            return;
-        }
+        if (!confirm('Delete this entire workout session?')) return;
 
         try {
             const response = await this.callApi(`deleteSession/${sessionId}`, 'DELETE');
@@ -813,9 +810,7 @@ class GymTracker {
     }
 
     static async deleteExerciseFromHistory(exerciseId) {
-        if (!confirm('Delete this exercise and all its sets?')) {
-            return;
-        }
+        if (!confirm('Delete this exercise and all its sets?')) return;
 
         try {
             const response = await this.callApi(`deleteExercise/${exerciseId}`, 'DELETE');
