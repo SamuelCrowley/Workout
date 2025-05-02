@@ -26,29 +26,25 @@ html, body {
     overflow: hidden;
 }
 
-@@media (max-width: 767.98px) {
-    .container-fluid {
-        height: auto !important;
-        min-height: 100vh;
+.metric-card h3 {
+    white-space: nowrap; 
+    overflow: hidden; 
+}
+
+.metric-card h5 {
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+}
+
+@media (max-width: 767.98px) {
+
+    .metric-card h3 {
+        font-size: 1.4rem; 
     }
 
-    .row {
-        flex-direction: column;
-    }
-
-    .col-md-6 {
-        height: auto !important;
-        min-height: 50vh;
-    }
-
-    #messagesList {
-        position: relative !important;
-        height: 50vh !important;
-    }
-
-    #gymTrackerContainer {
-        height: auto;
-        overflow: visible;
+    .metric-card h5 {
+        font-size: 1rem; 
     }
 }
 

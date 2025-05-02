@@ -26,172 +26,161 @@
            value="@antiforgery.GetAndStoreTokens(HttpContext).RequestToken">
 
     <div class="container-fluid px-0" style="height: calc(100vh - 150px);">
-        <div class="row g-0 h-100 flex-md-row flex-column">
-            <!-- Chat Room -->
-            <div class="col-md-6 d-flex flex-column h-100">
-                <div class="p-3 bg-light border-bottom flex-shrink-0">
-                    <h2 class="mb-0">Chat Room</h2>
-                </div>
+        @* <!-- Chat Room -->
+        <div class="col-md-6 d-flex flex-column h-100">
+        <div class="p-3 bg-light border-bottom flex-shrink-0">
+        <h2 class="mb-0">Chat Room</h2>
+        </div>
 
-                <!-- Messages Container -->
-                <div class="flex-grow-1 overflow-hidden position-relative">
-                    <ul id="messagesList"
-                        class="list-group h-100 overflow-auto m-3 rounded position-absolute w-100"
-                        style="border: 1px solid #dee2e6; top: 0; left: 0; right: 0; bottom: 0;">
-                        <!-- Messages will appear here -->
-                    </ul>
-                </div>
+        <!-- Messages Container -->
+        <div class="flex-grow-1 overflow-hidden position-relative">
+        <ul id="messagesList"
+        class="list-group h-100 overflow-auto m-3 rounded position-absolute w-100"
+        style="border: 1px solid #dee2e6; top: 0; left: 0; right: 0; bottom: 0;">
+        <!-- Messages will appear here -->
+        </ul>
+        </div>
 
-                <!-- Input Group - Fixed at bottom -->
-                <div class="input-group p-3 border-top flex-shrink-0">
-                    <input id="messageInput" type="text" class="form-control" placeholder="Type a message" />
-                    <button id="sendMessageBtn" class="btn btn-primary">
-                        <i class="bi bi-send"></i>
+        <!-- Input Group - Fixed at bottom -->
+        <div class="input-group p-3 border-top flex-shrink-0">
+        <input id="messageInput" type="text" class="form-control" placeholder="Type a message" />
+        <button id="sendMessageBtn" class="btn btn-primary">
+        <i class="bi bi-send"></i>
+        </button>
+        </div>
+        </div> *@
+
+        <!-- Workout Tracker -->
+        <div class="p-3 bg-light border-bottom">
+            <h2 class="mb-0">Workout Tracker</h2>
+        </div>
+        <div id="gymTrackerContainer" class="flex-grow-1 overflow-auto">
+            <div id="initialView" class="card m-3 shadow-sm">
+                <div class="card-body text-center">
+                    <h4 class="card-title">Ready to work out?</h4>
+                    <p class="card-text">Track your progress by starting a workout session.</p>
+                    <div class="mb-3" id="workoutNameContainer" style="display: none;">
+                        <input type="text" id="workoutNameInput" class="form-control" placeholder="Workout name (e.g., Chest, Push, Legs)">
+                    </div>
+                    <button class="btn btn-success btn-lg" id="startWorkoutBtn" style="display: none;">
+                        <i class="bi bi-play-circle"></i> Start Workout
+                    </button>
+                    <button class="btn btn-info btn-lg" id="createGymUserBtn" style="display: none;">
+                        Create Gym Account
                     </button>
                 </div>
             </div>
 
-            <!-- Workout Tracker -->
-            <div class="col-md-6 d-flex flex-column">
-                <div class="p-3 bg-light border-bottom">
-                    <h2 class="mb-0">Workout Tracker</h2>
+            <!-- Active Workout -->
+            <div id="activeWorkoutView" class="card m-3 shadow-sm" style="display: none;">
+                <div class="card-header bg-primary text-white p-3">
+                    <div class="d-flex flex-column gap-3">
+                        <div class="card bg-light">
+                            <div class="card-body d-flex align-items-center justify-content-between px-3 py-2">
+                                <h4 id="workoutNameDisplay" class="mb-0 text-truncate">Workout</h4>
+                                <button id="endWorkoutBtn" class="btn btn-danger btn-sm">End Workout</button>
+                            </div>
+                        </div>
+                        <div id="restTimerContainer" class="card bg-light" style="display: none;">
+                            <div class="card-body d-flex align-items-center justify-content-between px-3 py-2">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span>Rest:</span>
+                                    <span id="restTimerDisplay" class="fw-bold">00:00</span>
+                                </div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="btn-group">
+                                        <button id="startRestTimerBtn" class="btn btn-sm btn-success">
+                                            <i class="bi bi-play-fill"></i>
+                                        </button>
+                                        <button id="stopRestTimerBtn" class="btn btn-sm btn-danger">
+                                            <i class="bi bi-stop-fill"></i>
+                                        </button>
+                                    </div>
+                                    <select id="restTimerDuration" class="form-select form-select-sm" style="width: 80px;">
+                                        <option value="30">0:30</option>
+                                        <option value="60">1:00</option>
+                                        <option value="90" selected>1:30</option>
+                                        <option value="120">2:00</option>
+                                        <option value="150">2:30</option>
+                                        <option value="180">3:00</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div id="gymTrackerContainer" class="flex-grow-1 overflow-auto">
-                    <div id="initialView" class="card m-3 shadow-sm">
-                        <div class="card-body text-center">
-                            <h4 class="card-title">Ready to work out?</h4>
-                            <p class="card-text">Track your progress by starting a workout session.</p>
-                            <div class="mb-3" id="workoutNameContainer" style="display: none;">
-                                <input type="text" id="workoutNameInput" class="form-control" placeholder="Workout name (e.g., Chest, Push, Legs)">
-                            </div>
-                            <button class="btn btn-success btn-lg" id="startWorkoutBtn" style="display: none;">
-                                <i class="bi bi-play-circle"></i> Start Workout
-                            </button>
-                            <button class="btn btn-info btn-lg" id="createGymUserBtn" style="display: none;">
-                                Create Gym Account
-                            </button>
-                        </div>
-                    </div>
 
-                    <!-- Active Workout -->
-                    <div id="activeWorkoutView" class="card m-3 shadow-sm" style="display: none;">
-                        <div class="card-header bg-primary text-white p-3">
-                            <div class="d-flex flex-column gap-3">
-                                <div class="card bg-light">
-                                    <div class="card-body d-flex align-items-center justify-content-between px-3 py-2">
-                                        <h4 id="workoutNameDisplay" class="mb-0 text-truncate">Workout</h4>
-                                        <button id="endWorkoutBtn" class="btn btn-danger btn-sm">End Workout</button>
-                                    </div>
+                <div class="card-body">
+                    <div class="scroll-section">
+                        <div class="row mb-4 g-3 justify-content-center">
+                            <div class="col-5 text-center">
+                                <div class="metric-card p-2 rounded">
+                                    <h5>Duration</h5>
+                                    <h3 id="workoutTimer">00:00:00</h3>
                                 </div>
-                                <div id="restTimerContainer" class="card bg-light" style="display: none;">
-                                    <div class="card-body d-flex align-items-center justify-content-between px-3 py-2">
-                                        <div class="d-flex align-items-center gap-2">
-                                            <span>Rest:</span>
-                                            <span id="restTimerDisplay" class="fw-bold">00:00</span>
-                                        </div>
-                                        <div class="d-flex align-items-center gap-2">
-                                            <div class="btn-group">
-                                                <button id="startRestTimerBtn" class="btn btn-sm btn-success">
-                                                    <i class="bi bi-play-fill"></i>
-                                                </button>
-                                                <button id="stopRestTimerBtn" class="btn btn-sm btn-danger">
-                                                    <i class="bi bi-stop-fill"></i>
-                                                </button>
-                                            </div>
-                                            <select id="restTimerDuration" class="form-select form-select-sm" style="width: 80px;">
-                                                <option value="30">0:30</option>
-                                                <option value="60">1:00</option>
-                                                <option value="90" selected>1:30</option>
-                                                <option value="120">2:00</option>
-                                                <option value="150">2:30</option>
-                                                <option value="180">3:00</option>
-                                            </select>
-                                        </div>
-                                    </div>
+                            </div>
+                            <div class="col-3 text-center">
+                                <div class="metric-card p-2 rounded">
+                                    <h5>Exercises</h5>
+                                    <h3 id="exerciseCount">0</h3>
+                                </div>
+                            </div>
+                            <div class="col-3 text-center">
+                                <div class="metric-card p-2 rounded">
+                                    <h5>Sets</h5>
+                                    <h3 id="totalSets">0</h3>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="card-body">
-                            <div class="scroll-section">
-                                <div class="row mb-4 g-3">
-                                    <div class="col-4 text-center">
-                                        <div class="metric-card p-2 rounded">
-                                            <h5>Duration</h5>
-                                            <h3 id="workoutTimer">00:00:00</h3>
-                                        </div>
-                                    </div>
-                                    <div class="col-4 text-center">
-                                        <div class="metric-card p-2 rounded">
-                                            <h5>Exercises</h5>
-                                            <h3 id="exerciseCount">0</h3>
-                                        </div>
-                                    </div>
-                                    <div class="col-4 text-center">
-                                        <div class="metric-card p-2 rounded">
-                                            <h5>Total Sets</h5>
-                                            <h3 id="totalSets">0</h3>
-                                        </div>
-                                    </div>
+                        <div class="swappable-Content">
+                            <!-- Current Exercises -->
+                            <div id="currentExercises" class="mb-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5>Exercises</h5>
                                 </div>
+                                <div id="exercisesList" class="list-group"></div>
 
-                                <div id="currentExercises" class="mb-4">
-                                    <div class="d-flex justify-content-between align-items-center mb-3">
-                                        <h5>Exercises</h5>
-                                    </div>
-                                    <div id="exercisesList" class="list-group"></div>
-                                </div>
-                            </div>
-
-                            <div class="sticky-bottom-input">
                                 <div class="input-group">
                                     <input type="text" id="exerciseNameInput" class="form-control" placeholder="Exercise name (e.g., Bench Press)">
                                     <button id="addExerciseBtn" class="btn btn-primary">Add Exercise</button>
                                 </div>
                             </div>
-                        </div>
-                    </div>
 
-                    <!-- Exercise Detail -->
-                    <div id="exerciseDetailView" class="card m-3 shadow-sm" style="display: none;">
-                        <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
-                            <h4 id="exerciseDetailTitle" class="mb-0">Exercise Details</h4>
-                            <button id="backToWorkoutBtn" class="btn btn-light btn-sm">Back to Workout</button>
-                        </div>
+                            <!-- Exercise Detail -->
+                            <div id="exerciseDetailView" style="display: none;">
+                                @* <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                                    <h4 id="exerciseDetailTitle" class="mb-0">Exercise Details</h4>
+                                    <button id="backToWorkoutBtn" class="btn btn-light btn-sm">Back to Workout</button>
+                                </div> *@
 
-                        <div class="card-body">
-                            <div class="scroll-section">
-                                <div id="setsList" class="mb-3">
-                                    <h5>Sets</h5>
-                                    <table class="table table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>Set</th>
-                                                <th>Reps</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="setsTableBody"></tbody>
-                                    </table>
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 id="exerciseDetailTitle">Exercise Details</h5>
+                                    <button id="backToWorkoutBtn" class="btn btn-light btn-sm">Back to Workout</button>
                                 </div>
-                            </div>
-                            <div class="sticky-bottom-input">
+
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Set</th>
+                                            <th>Reps</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="setsTableBody"></tbody>
+                                </table>
                                 <div class="d-grid">
                                     <button id="addSetBtn" class="btn btn-primary">Add New Set</button>
                                 </div>
                             </div>
-                        </div>
-                    </div>
 
-                    <!-- Set Detail -->
-                    <div id="setDetailView" class="card m-3 shadow-sm" style="display: none;">
-                        <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
-                            <h4 id="setDetailTitle" class="mb-0">Set Details</h4>
-                            <button id="backToExerciseBtn" class="btn btn-light btn-sm">Back to Exercise</button>
-                        </div>
+                            <!-- Set Detail -->
+                            <div id="setDetailView" style="display: none;">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 id="setDetailTitle">Exercise Details</h5>
+                                    <button id="backToExercisesBtn" class="btn btn-light btn-sm">Back to Exercises</button>
+                                </div>
 
-                        <div class="card-body">
-                            <div class="scroll-section">
                                 <div class="mb-3">
                                     <label for="setWeightInput" class="form-label">Weight (kg)</label>
                                     <input type="number" id="setWeightInput" class="form-control" min="0" step="0.5" value="20">
@@ -232,8 +221,7 @@
                                     </div>
                                     <div id="repsList" class="list-group mb-3"></div>
                                 </div>
-                            </div>
-                            <div class="sticky-bottom-input">
+
                                 <div class="d-grid">
                                     <button id="saveSetBtn" class="btn btn-success">Save Set</button>
                                 </div>
@@ -303,11 +291,11 @@
                 .build();
 
             document.addEventListener("DOMContentLoaded", () => {
-                Chat.initialize(connection);
+                //Chat.initialize(connection);
                 GymTracker.initialize(gymConfig);
             });
         </script>
-        <script src="~/js/chat.js" asp-append-version="true"></script>
+        <!--<script src="~/js/chat.js" asp-append-version="true"></script>-->
         <script src="~/js/gymTracker.js" asp-append-version="true"></script>
     }
 </body>

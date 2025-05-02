@@ -30,7 +30,7 @@ class GymTracker {
         document.getElementById("addExerciseBtn")?.addEventListener("click", () => this.addExercise());
         document.getElementById("addSetBtn")?.addEventListener("click", () => this.addSet());
         document.getElementById("backToWorkoutBtn")?.addEventListener("click", () => this.backToWorkout());
-        document.getElementById("backToExerciseBtn")?.addEventListener("click", () => this.backToExercise());
+        document.getElementById("backToExercisesBtn")?.addEventListener("click", () => this.backToExercise());
         document.getElementById("addRepsBtn")?.addEventListener("click", () => this.addReps());
         document.getElementById("clearRepsBtn")?.addEventListener("click", () => this.clearReps());
         document.getElementById("saveSetBtn")?.addEventListener("click", () => this.saveSet());
@@ -160,6 +160,7 @@ class GymTracker {
 
                 document.getElementById("initialView").style.display = "none";
                 document.getElementById("activeWorkoutView").style.display = "block";
+                document.getElementById("currentExercises").style.display = "block";
                 document.getElementById("workoutNameDisplay").textContent = workout.name;
                 document.getElementById("restTimerContainer").style.display = "block";
 
@@ -207,6 +208,7 @@ class GymTracker {
             this.startTimer();
             document.getElementById("initialView").style.display = "none";
             document.getElementById("activeWorkoutView").style.display = "block";
+            document.getElementById("currentExercises").style.display = "block";
             document.getElementById("workoutNameDisplay").textContent = workoutName;
             document.getElementById("restTimerContainer").style.display = "block";
             this.state.restTimerRemaining = parseInt(document.getElementById("restTimerDuration").value);
@@ -247,6 +249,7 @@ class GymTracker {
             this.resetWorkoutData();
 
             document.getElementById("activeWorkoutView").style.display = "none";
+            document.getElementById("currentExercises").style.display = "none";
             document.getElementById("exerciseDetailView").style.display = "none";
             document.getElementById("setDetailView").style.display = "none";
             document.getElementById("initialView").style.display = "block";
@@ -387,7 +390,7 @@ class GymTracker {
         }
         this.state.currentExerciseId = exerciseId;
         document.getElementById("exerciseDetailTitle").textContent = exercise.name;
-        document.getElementById("activeWorkoutView").style.display = "none";
+        document.getElementById("currentExercises").style.display = "none";
         document.getElementById("exerciseDetailView").style.display = "block";
         document.getElementById("setDetailView").style.display = "none";
         this.renderSetsList();
@@ -678,7 +681,7 @@ class GymTracker {
     static backToWorkout() {
         document.getElementById("exerciseDetailView").style.display = "none";
         document.getElementById("setDetailView").style.display = "none";
-        document.getElementById("activeWorkoutView").style.display = "block";
+        document.getElementById("currentExercises").style.display = "block";
         this.state.currentExerciseId = null;
         this.state.currentSetId = null;
         this.renderExercisesList();
