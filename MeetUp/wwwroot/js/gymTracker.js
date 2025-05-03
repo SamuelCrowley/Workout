@@ -10,7 +10,7 @@ class GymTracker {
         currentSetId: null,
         workoutStartTime: null,
         timerInterval: null,
-        restTimerEndTime : null,
+        restTimerEndTime: null,
         exercises: [],
         currentReps: [],
         editingSet: false
@@ -58,8 +58,8 @@ class GymTracker {
             let modal = bootstrap.Modal.getInstance(historyModalEl);
             if (!modal) {
                 modal = new bootstrap.Modal(historyModalEl, {
-                    keyboard: true,  
-                    backdrop: true   
+                    keyboard: true,
+                    backdrop: true
                 });
             }
 
@@ -79,7 +79,7 @@ class GymTracker {
                 document.getElementById('workoutDetails').style.display = 'none';
                 await this.loadWorkoutHistory();
             } catch (error) {
-                cleanup(); 
+                cleanup();
             } finally {
                 setTimeout(() => {
                     historyModalEl.dataset.processing = 'false';
@@ -275,8 +275,8 @@ class GymTracker {
 
             const diff = localTimeAsUTC - workoutTimeAsUTC;
 
-            const hours = Math.floor(diff / 3600000); 
-            const minutes = Math.floor((diff % 3600000) / 60000); 
+            const hours = Math.floor(diff / 3600000);
+            const minutes = Math.floor((diff % 3600000) / 60000);
             const seconds = Math.floor((diff % 60000) / 1000);
 
             document.getElementById("workoutTimer").textContent =
@@ -285,7 +285,7 @@ class GymTracker {
                 `${String(seconds).padStart(2, '0')}`;
         };
 
-        updateTimer(); 
+        updateTimer();
         this.state.timerInterval = setInterval(updateTimer, 1000);
     }
 
@@ -600,6 +600,12 @@ class GymTracker {
         }
         this.state.exercises.forEach(exercise => {
             const exerciseItem = document.createElement("div");
+
+            let deleteOnClick = this.getOnClick("deleteExercise", exercise.id);
+            let deleteButton = this.getDeleteButton(deleteOnClick);
+            let viewOnClick = this.getOnClick("viewExerciseDetails", exercise.id);
+            let viewButton = this.getViewButton(viewOnClick);
+
             exerciseItem.className = "list-group-item exercise-item";
             exerciseItem.innerHTML = `
                 <div class="d-flex justify-content-between align-items-center">
@@ -608,12 +614,8 @@ class GymTracker {
                         <small class="text-muted">${exercise.sets.length} sets</small>
                     </div>
                     <div>
-                        <button class="btn btn-sm btn-outline-primary me-2" onclick="GymTracker.viewExerciseDetails('${exercise.id}')">
-                            View/Add Sets
-                        </button>
-                        <button class="btn btn-sm btn-outline-danger" onclick="GymTracker.deleteExercise('${exercise.id}')">
-                            <i class="bi bi-trash"></i>
-                        </button>
+                        ${viewButton}
+                        ${deleteButton}
                     </div>
                 </div>`;
             container.appendChild(exerciseItem);
@@ -634,16 +636,21 @@ class GymTracker {
         }
         exercise.sets.forEach((set, index) => {
             const setRow = document.createElement("tr");
+
+            let joinedRef = `${exercise.id}', '${set.id}`;
+
+            let deleteOnClick = this.getOnClick("deleteSet", joinedRef);
+            let deleteButton = this.getDeleteButton(deleteOnClick);
+
+            let viewOnClick = this.getOnClick("viewSetDetails", joinedRef);
+            let viewButton = this.getViewButton(viewOnClick);
+
             setRow.innerHTML = `
                 <td>${index + 1}</td>
                 <td>${set.reps.length}</td>
                 <td>
-                    <button class="btn btn-sm btn-outline-info me-2" onclick="GymTracker.viewSetDetails('${exercise.id}', '${set.id}')">
-                        Edit
-                    </button>
-                    <button class="btn btn-sm btn-outline-danger" onclick="GymTracker.deleteSet('${exercise.id}', '${set.id}')">
-                        Delete
-                    </button>
+                    ${viewButton}
+                    ${deleteButton}
                 </td>`;
             container.appendChild(setRow);
         });
@@ -659,6 +666,12 @@ class GymTracker {
         this.state.currentReps.forEach((rep, index) => {
             const weight = rep.weight || document.getElementById("setWeightInput").value;
             const repItem = document.createElement("div");
+
+            let deleteOnClick = this.getOnClick("deleteRep", rep.id);
+            let deleteButton = this.getDeleteButton(deleteOnClick);
+            let editOnClick = this.getOnClick("updateRepWeight", rep.id);
+            let editButton = this.getEditButton(editOnClick);
+
             repItem.className = "list-group-item rep-item";
             repItem.innerHTML = `
                 <span>Rep ${index + 1}</span>
@@ -667,12 +680,8 @@ class GymTracker {
                           onclick="GymTracker.updateRepDifficulty('${rep.id}')">
                         ${rep.difficulty} (${weight}kg)
                     </span>
-                    <button class="btn btn-sm btn-outline-secondary" onclick="GymTracker.updateRepWeight('${rep.id}')">
-                        <i class="bi bi-pencil"></i>
-                    </button>
-                    <button class="btn btn-sm btn-outline-danger" onclick="GymTracker.deleteRep('${rep.id}')">
-                        <i class="bi bi-trash"></i>
-                    </button>
+                    ${editButton}
+                    ${deleteButton}
                 </div>`;
             container.appendChild(repItem);
         });
@@ -710,6 +719,13 @@ class GymTracker {
             }
 
             response.sessions.forEach(session => {
+
+                let deleteOnClick = this.getOnClick("deleteSession", session.id);
+                let deleteButton = this.getDeleteButton(deleteOnClick);
+
+                let viewOnClick = this.getOnClick("viewSessionDetails", session.id);
+                let viewButton = this.getViewButton(viewOnClick);
+
                 const sessionItem = document.createElement('li');
                 sessionItem.className = 'list-group-item d-flex justify-content-between align-items-center';
                 sessionItem.innerHTML = `
@@ -723,12 +739,8 @@ class GymTracker {
                         </div>
                     </div>
                     <div>
-                        <button class="btn btn-sm btn-outline-primary me-2" onclick="GymTracker.viewSessionDetails('${session.id}')">
-                            <i class="bi bi-eye"></i> View
-                        </button>
-                        <button class="btn btn-sm btn-outline-danger" onclick="GymTracker.deleteSession('${session.id}')">
-                            <i class="bi bi-trash"></i> Delete
-                        </button>
+                        ${viewButton}
+                        ${deleteButton}
                     </div>`;
                 sessionsList.appendChild(sessionItem);
             });
@@ -853,5 +865,27 @@ class GymTracker {
     static showHistoryLoading(show) {
         document.getElementById('historyLoading').style.display = show ? 'block' : 'none';
         document.getElementById('historyContent').style.display = show ? 'none' : 'block';
+    }
+
+    static getDeleteButton(onClick) {
+        return `<button class="btn btn-sm btn-outline-danger" ${onClick}>
+            <i class="bi bi-trash"></i> Delete
+        </button>`;
+    }
+
+    static getViewButton(onClick) {
+        return `<button class="btn btn-sm btn-outline-primary me-2" ${onClick}>
+            <i class="bi bi-eye"></i> View
+        </button>`;
+    }
+
+    static getEditButton(onClick) {
+        return `<button class="btn btn-sm btn-outline-secondary" ${onClick}">
+            <i class="bi bi-pencil"></i> Edit
+        </button>`;
+    }
+
+    static getOnClick(methodName, reference) {
+        return `onClick="GymTracker.${methodName}('${reference}')"`
     }
 }
