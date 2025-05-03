@@ -31,7 +31,7 @@ namespace MeetUp.wwwroot
             string joinerName = GetUserName(user);
 
             _stateService.AddUser(Context.ConnectionId);
-            await Clients.All.SendAsync("ReceiveMessage", "System", $"{joinerName} joined", "#888");
+            await Clients.All.SendAsync("ReceiveMessage", "System", $"{joinerName} joined", "#FFFFFF");
 
             await base.OnConnectedAsync();
         }
@@ -42,7 +42,7 @@ namespace MeetUp.wwwroot
             string leaverName = GetUserName(user);
 
             _stateService.RemoveUser(Context.ConnectionId);
-            await Clients.All.SendAsync("ReceiveMessage", "System", $"{leaverName} left", "#888");
+            await Clients.All.SendAsync("ReceiveMessage", "System", $"{leaverName} left", "#FFFFFF");
 
             await base.OnDisconnectedAsync(exception);
         }

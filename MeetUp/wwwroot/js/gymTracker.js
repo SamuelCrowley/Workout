@@ -226,6 +226,7 @@ class GymTracker {
 
         document.getElementById("exercisesList").innerHTML = "";
         document.getElementById("setsTableBody").innerHTML = "";
+
         document.getElementById("repsList").innerHTML = "";
         document.getElementById("exerciseNameInput").value = "";
         document.getElementById("setWeightInput").value = "20";
@@ -320,7 +321,7 @@ class GymTracker {
         const seconds = Math.floor((remaining % 60000) / 1000);
 
         document.getElementById("restTimerDisplay").textContent =
-            `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            `Rest: ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
 
         if (remaining <= 0) {
             this.stopRestTimer();
@@ -333,7 +334,7 @@ class GymTracker {
             this.state.restTimerInterval = null;
         }
         this.state.restTimerEndTime = null;
-        document.getElementById("restTimerDisplay").textContent = "00:00";
+        document.getElementById("restTimerDisplay").textContent = "Rest: 00:00";
     }
 
     static async addExercise() {
@@ -448,7 +449,7 @@ class GymTracker {
         }
 
         const currentWeight = this.state.currentReps[repIndex].weight || document.getElementById("setWeightInput").value;
-        const newWeight = prompt("Enter new weight (kg):", currentWeight);
+        const newWeight = prompt("Enter new weight:", currentWeight);
 
         if (newWeight !== null && !isNaN(newWeight)) {
             this.state.currentReps[repIndex].weight = parseFloat(newWeight);
@@ -678,7 +679,7 @@ class GymTracker {
                 <div class="rep-item-controls">
                     <span class="badge ${rep.difficulty} difficulty-badge"
                           onclick="GymTracker.updateRepDifficulty('${rep.id}')">
-                        ${rep.difficulty} (${weight}kg)
+                        ${rep.difficulty} (${weight})
                     </span>
                     ${editButton}
                     ${deleteButton}
@@ -714,7 +715,7 @@ class GymTracker {
             const sessionsList = document.getElementById('workoutSessionsList');
             sessionsList.innerHTML = '';
             if (response.sessions.length === 0) {
-                sessionsList.innerHTML = '<li class="list-group-item text-muted">No workout history found</li>';
+                sessionsList.innerHTML = '<li class="list-group-item txt-primary">No workout history found</li>';
                 return;
             }
 
@@ -730,8 +731,8 @@ class GymTracker {
                 sessionItem.className = 'list-group-item d-flex justify-content-between align-items-center';
                 sessionItem.innerHTML = `
                     <div>
-                        <strong>${session.name}</strong>
-                        <div class="text-muted small">
+                        <h5>${session.name}</h5>
+                        <div class="txt-primary">
                             ${new Date(session.startTime).toLocaleDateString()} •
                             ${Math.round(session.duration)} minutes •
                             ${session.exerciseCount} exercises •
@@ -754,7 +755,7 @@ class GymTracker {
 
     static async viewSessionDetails(sessionId) {
         try {
-            this.showHistoryLoading(true);
+            //this.showHistoryLoading(true);
             const response = await this.callApi(`workoutDetails/${sessionId}`);
             if (!response.success) {
                 throw new Error(response.message);
@@ -765,44 +766,45 @@ class GymTracker {
             const exercisesContainer = document.getElementById('sessionExercises');
             exercisesContainer.innerHTML = '';
 
+            let deleteSetFromHistoryMethod = 'deleteSetFromHistory';
+
             response.session.exercises.forEach(exercise => {
+                let deleteExerciseOnClick = this.getOnClick("deleteExerciseFromHistory", exercise.id);
+                let deleteExerciseButton = this.getDeleteButton(deleteExerciseOnClick);
+
                 const exerciseCard = document.createElement('div');
                 exerciseCard.className = 'card mb-3';
                 exerciseCard.innerHTML = `
-                    <div class="card-header d-flex justify-content-between align-items-center">
-                        <h6 class="mb-0">${exercise.name}</h6>
-                        <button class="btn btn-sm btn-outline-danger" onclick="GymTracker.deleteExerciseFromHistory('${exercise.id}')">
-                            <i class="bi bi-trash"></i> Delete
-                        </button>
+                    <div class="card-header d-flex justify-content-between align-items-center bg-coal">
+                        <h2 class="mb-0">${exercise.name}</h2>
+                        ${deleteExerciseButton}
                     </div>
-                    <div class="card-body">
+                    <div class="card-body bg-coal">
                         <ul class="list-group">
-                            ${exercise.sets.map(set => `
-                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                            ${exercise.sets.map(set => {
+                                let deleteSetOnClick = this.getOnClick(deleteSetFromHistoryMethod, set.id);
+                                let deleteSetButton = this.getDeleteButton(deleteSetOnClick);
+                                return  `<li class="list-group-item d-flex justify-content-between align-items-center txt-primary">
                                     <div>
                                         <strong>Set</strong>
                                         <div>
                                             ${set.reps.sort((a, b) => a.order - b.order).map(rep => `
-                                                <span class="badge ${rep.difficulty} me-1">
-                                                    ${rep.weight}kg (${rep.difficulty})
+                                                <span class="badge ${rep.difficulty} me-1 txt-primary">
+                                                    ${rep.weight} (${rep.difficulty})
                                                 </span>
                                             `).join('')}
                                         </div>
                                     </div>
-                                    <button class="btn btn-sm btn-outline-danger" onclick="GymTracker.deleteSetFromHistory('${set.id}')">
-                                        <i class="bi bi-trash"></i>
-                                    </button>
-                                </li>
-                            `).join('')}
+                                    ${deleteSetButton}
+                                </li>`
+                            }).join('')}
                         </ul>
                     </div>`;
                 exercisesContainer.appendChild(exerciseCard);
             });
 
             document.getElementById('workoutDetails').style.display = 'block';
-            this.showHistoryLoading(false);
         } catch (error) {
-            this.showHistoryLoading(false);
             alert('Error loading session details: ' + error.message);
         }
     }
@@ -869,19 +871,19 @@ class GymTracker {
 
     static getDeleteButton(onClick) {
         return `<button class="btn btn-red" ${onClick}>
-            <i class="bi bi-trash"></i> Delete
+            <i class="bi bi-trash"></i> 
         </button>`;
     }
 
     static getViewButton(onClick) {
-        return `<button class="btn btn-yellow me-2" ${onClick}>
-            <i class="bi bi-eye"></i> View
+        return `<button class="btn btn-yellow" ${onClick}>
+            <i class="bi bi-eye"></i> 
         </button>`;
     }
 
     static getEditButton(onClick) {
         return `<button class="btn btn-yellow" ${onClick}">
-            <i class="bi bi-pencil"></i> Edit
+            <i class="bi bi-pencil"></i> 
         </button>`;
     }
 
