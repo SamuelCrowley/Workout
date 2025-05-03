@@ -611,7 +611,7 @@ class GymTracker {
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <h6 class="mb-1">${exercise.name}</h6>
-                        <small class="text-muted">${exercise.sets.length} sets</small>
+                        <h6 class="mb-1">${exercise.sets.length} sets</small>
                     </div>
                     <div>
                         ${viewButton}
@@ -868,19 +868,19 @@ class GymTracker {
     }
 
     static getDeleteButton(onClick) {
-        return `<button class="btn btn-sm btn-outline-danger" ${onClick}>
+        return `<button class="btn btn-red" ${onClick}>
             <i class="bi bi-trash"></i> Delete
         </button>`;
     }
 
     static getViewButton(onClick) {
-        return `<button class="btn btn-sm btn-outline-primary me-2" ${onClick}>
+        return `<button class="btn btn-yellow me-2" ${onClick}>
             <i class="bi bi-eye"></i> View
         </button>`;
     }
 
     static getEditButton(onClick) {
-        return `<button class="btn btn-sm btn-outline-secondary" ${onClick}">
+        return `<button class="btn btn-yellow" ${onClick}">
             <i class="bi bi-pencil"></i> Edit
         </button>`;
     }

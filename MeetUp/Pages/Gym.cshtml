@@ -9,7 +9,7 @@
     ViewData["Title"] = "Chat";
 }
 
-<head>
+<head class="bg-raven text-primary">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - MeetUp</title>
@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 
-<body>
+<body class="bg-raven text-primary">
     <input type="hidden" id="__RequestVerificationToken"
            name="__RequestVerificationToken"
            value="@antiforgery.GetAndStoreTokens(HttpContext).RequestToken">
@@ -26,18 +26,18 @@
     <div class="container-fluid px-0" style="height: calc(100vh - 150px);">
 
         <!-- Workout Tracker -->
-        <div class="p-3 bg-light border-bottom">
+        <div class="p-3 bg-coal border-bottom">
             <h2 class="mb-0">Workout Tracker</h2>
         </div>
-        <div id="gymTrackerContainer" class="flex-grow-1 overflow-auto">
-            <div id="initialView" class="card m-3 shadow-sm">
-                <div class="card-body text-center">
+        <div id="gymTrackerContainer" class="flex-grow-1 overflow-auto bg-dark">
+            <div id="initialView" class="card m-3 shadow-sm bg-dark">
+                <div class="bg-coal text-center">
                     <h4 class="card-title">Ready to work out?</h4>
                     <p class="card-text">Track your progress by starting a workout session.</p>
                     <div class="mb-3" id="workoutNameContainer" style="display: none;">
                         <input type="text" id="workoutNameInput" class="form-control" placeholder="Workout name (e.g., Chest, Push, Legs)">
                     </div>
-                    <button class="btn btn-success btn-lg" id="startWorkoutBtn" style="display: none;">
+                    <button class="btn btn-yellow btn-lg" id="startWorkoutBtn" style="display: none;">
                         <i class="bi bi-play-circle"></i> Start Workout
                     </button>
                     <button class="btn btn-info btn-lg" id="createGymUserBtn" style="display: none;">
@@ -48,19 +48,19 @@
 
             <!-- Active Workout -->
             <div id="activeWorkoutView" class="card m-3 background shadow-sm" style="display: none;">
-                <div class="card-header bg-primary text-white p-3">
+                <div class="card-header bg-dark p-3">
                     <div class="d-flex flex-column gap-3">
-                        <div class="card bg-light">
+                        <div class="card bg-coal">
                             <div class="card-body d-flex align-items-center justify-content-between px-3 py-2">
                                 <h4 id="workoutNameDisplay" class="mb-0 text-truncate">Workout</h4>
-                                <button id="endWorkoutBtn" class="btn btn-danger btn-sm">End Workout</button>
+                                <button id="endWorkoutBtn" class="btn btn-yellow">End Workout</button>
                             </div>
                         </div>
-                        <div id="restTimerContainer" class="card bg-light" style="display: none;">
+                        <div id="restTimerContainer" class="card bg-coal" style="display: none;">
                             <div class="card-body d-flex align-items-center justify-content-between px-3 py-2">
                                 <div class="d-flex align-items-center gap-2">
-                                    <span>Rest:</span>
-                                    <span id="restTimerDisplay" class="fw-bold">00:00</span>
+                                    <span class="bg-coal">Rest:</span>
+                                    <span id="restTimerDisplay" class="bg-coal">00:00</span>
                                 </div>
                                 <div class="d-flex align-items-center gap-2">
                                     <div class="btn-group">
@@ -85,30 +85,30 @@
                     </div>
                 </div>
 
-                <div class="card-body">
-                    <div class="scroll-section">
+                <div class="card-body bg-dark">
+                    <div class="scroll-section bg-dark">
                         <div class="row mb-4 g-3 justify-content-center">
-                            <div class="col-5 text-center">
-                                <div class="metric-card p-2 rounded">
+                            <div class="col-4 text-center">
+                                <div class="metric-card bg-coal p-2 rounded">
                                     <h5>Duration</h5>
                                     <h3 id="workoutTimer">00:00:00</h3>
                                 </div>
                             </div>
-                            <div class="col-3 text-center">
-                                <div class="metric-card p-2 rounded">
+                            <div class="col-4 text-center">
+                                <div class="metric-card bg-coal p-2 rounded">
                                     <h5>Exercises</h5>
                                     <h3 id="exerciseCount">0</h3>
                                 </div>
                             </div>
-                            <div class="col-3 text-center">
-                                <div class="metric-card p-2 rounded">
+                            <div class="col-4 text-center">
+                                <div class="metric-card bg-coal p-2 rounded">
                                     <h5>Sets</h5>
                                     <h3 id="totalSets">0</h3>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="swappable-Content">
+                        <div class="swappable-Content txt-primary">
                             <!-- Current Exercises -->
                             <div id="currentExercises" class="mb-4">
                                 <div class="d-flex justify-content-between align-items-center mb-3">
@@ -116,27 +116,23 @@
                                 </div>
                                 <div id="exercisesList" class="list-group"></div>
 
-                                <div class="input-group">
+                                <div class="input-group class="m-2">
                                     <input type="text" id="exerciseNameInput" class="form-control" placeholder="Exercise name (e.g., Bench Press)">
-                                    <button id="addExerciseBtn" class="btn btn-primary">Add Exercise</button>
+                                    <button id="addExerciseBtn" class="btn btn-yellow">Add Exercise</button>
                                 </div>
                             </div>
 
                             <!-- Exercise Detail -->
                             <div id="exerciseDetailView" style="display: none;">
-                                @* <div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
-                                <h4 id="exerciseDetailTitle" class="mb-0">Exercise Details</h4>
-                                <button id="backToWorkoutBtn" class="btn btn-light btn-sm">Back to Workout</button>
-                                </div> *@
 
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <h5 id="exerciseDetailTitle">Exercise Details</h5>
-                                    <button id="backToWorkoutBtn" class="btn btn-primary">
+                                    <button id="backToWorkoutBtn" class="btn btn-yellow">
                                         <i class="bi bi-arrow-left"></i> Return to Workout
                                     </button>
                                 </div>
 
-                                <table class="table table-striped">
+                                <table class="table table-dark">
                                     <thead>
                                         <tr>
                                             <th>Set</th>
@@ -147,7 +143,7 @@
                                     <tbody id="setsTableBody"></tbody>
                                 </table>
                                 <div class="d-grid">
-                                    <button id="addSetBtn" class="btn btn-primary">Add New Set</button>
+                                    <button id="addSetBtn" class="btn btn-yellow">Add New Set</button>
                                 </div>
                             </div>
 
@@ -155,7 +151,7 @@
                             <div id="setDetailView" style="display: none;">
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <h5 id="setDetailTitle">Exercise Details</h5>
-                                    <button id="backToExercisesBtn" class="btn btn-primary">
+                                    <button id="backToExercisesBtn" class="btn btn-yellow">
                                         <i class="bi bi-arrow-left"></i> Return to Exercises
                                     </button>
                                 </div>
@@ -195,13 +191,13 @@
                                         </div>
                                     </div>
                                     <div class="col-md-12 d-flex align-items-end">
-                                        <button id="addRepsBtn" class="btn btn-primary w-50 mx-auto">Add Rep</button>
-                                        <button id="clearRepsBtn" class="btn btn-outline-danger w-50 mx-auto">Clear All</button>
+                                        <button id="addRepsBtn" class="btn btn-yellow w-50 mx-auto">Add Rep</button>
+                                        <button id="clearRepsBtn" class="btn btn-red w-50 mx-auto">Clear All</button>
                                     </div>
                                 </div>
                                 <div id="repsList" class="list-group mb-3"></div>
                                 
-                                <button id="saveSetBtn" class="btn btn-success w-100 mx-auto">
+                                <button id="saveSetBtn" class="btn btn-yellow w-100 mx-auto">
                                     Save Set
                                 </button>
                             </div>
@@ -214,7 +210,7 @@
         <!-- View Workout History Button -->
         <div class="position-fixed" style="bottom: 5px; right: 5px; z-index: 1000;">
             <button id="viewHistoryBtn"
-                    class="btn btn-info btn-lg rounded-circle"
+                    class="btn btn-yellow btn-lg rounded-circle"
                     style="width: 60px; height: 60px;"
                     data-bs-toggle="modal"
                     data-bs-target="#historyModal"
@@ -223,15 +219,28 @@
             </button>
         </div>
 
+        <!-- View Chat Button -->
+        <div class="position-fixed" style="bottom: 5px; right: 70px; z-index: 1000;">
+            <button id="openChatBtn"
+                    class="btn btn-yellow btn-lg rounded-circle"
+                    style="width: 60px; height: 60px;"
+                    data-bs-toggle="offcanvas"
+                    data-bs-target="#chatOffcanvas"
+                    aria-controls="chatOffcanvas"
+                    title="Open Chat">
+                <i class="bi bi-chat-dots"></i>
+            </button>
+        </div>
+
         <!-- Workout History Modal -->
         <div class="modal fade" id="historyModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
+                <div class="modal-content bg-dark">
+                    <div class="modal-header bg-coal">
                         <h5 class="modal-title">Workout History</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
+                    <div class="modal-body bg-dark">
                         <div id="historyLoading" class="text-center">
                             <div class="spinner-border text-primary" role="status">
                                 <span class="visually-hidden">Loading...</span>
@@ -252,19 +261,6 @@
             </div>
         </div>
 
-        <!-- View Chat Button -->
-        <div class="position-fixed" style="bottom: 5px; right: 70px; z-index: 1000;">
-            <button id="openChatBtn"
-                    class="btn btn-primary btn-lg rounded-circle"
-                    style="width: 60px; height: 60px;"
-                    data-bs-toggle="offcanvas"
-                    data-bs-target="#chatOffcanvas"
-                    aria-controls="chatOffcanvas"
-                    title="Open Chat">
-                <i class="bi bi-chat-dots"></i>
-            </button>
-        </div>
-
         <div class="offcanvas offcanvas-end" tabindex="-1" id="chatOffcanvas" aria-labelledby="chatOffcanvasLabel">
 
             <div class="offcanvas-header">
@@ -273,7 +269,6 @@
             </div>
 
             <div class="offcanvas-body d-flex flex-column">
-
                 <div class="p-3 bg-light border-bottom flex-shrink-0">
                     <h2 class="mb-0">Chat</h2>
                 </div>
@@ -291,7 +286,6 @@
                         <i class="bi bi-send"></i>
                     </button>
                 </div>
-
             </div>
         </div>
 </body>
