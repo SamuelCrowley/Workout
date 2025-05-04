@@ -1,0 +1,12 @@
+C:\Users\Sam\source\repos\MeetUp\Workout.Domain\bin\Release\net8.0\Workout.Domain.deps.json
+C:\Users\Sam\source\repos\MeetUp\Workout.Domain\bin\Release\net8.0\Workout.Domain.dll
+C:\Users\Sam\source\repos\MeetUp\Workout.Domain\bin\Release\net8.0\Workout.Domain.pdb
+C:\Users\Sam\source\repos\MeetUp\Workout.Domain\obj\Release\net8.0\Workout.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Sam\source\repos\MeetUp\Workout.Domain\obj\Release\net8.0\Workout.Domain.AssemblyInfoInputs.cache
+C:\Users\Sam\source\repos\MeetUp\Workout.Domain\obj\Release\net8.0\Workout.Domain.AssemblyInfo.cs
+C:\Users\Sam\source\repos\MeetUp\Workout.Domain\obj\Release\net8.0\Workout.Domain.csproj.CoreCompileInputs.cache
+C:\Users\Sam\source\repos\MeetUp\Workout.Domain\obj\Release\net8.0\Workout.Domain.sourcelink.json
+C:\Users\Sam\source\repos\MeetUp\Workout.Domain\obj\Release\net8.0\Workout.Domain.dll
+C:\Users\Sam\source\repos\MeetUp\Workout.Domain\obj\Release\net8.0\refint\Workout.Domain.dll
+C:\Users\Sam\source\repos\MeetUp\Workout.Domain\obj\Release\net8.0\Workout.Domain.pdb
+C:\Users\Sam\source\repos\MeetUp\Workout.Domain\obj\Release\net8.0\ref\Workout.Domain.dll
