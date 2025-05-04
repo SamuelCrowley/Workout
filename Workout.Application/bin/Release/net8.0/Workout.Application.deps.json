@@ -1,0 +1,36 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "Workout.Application/1.0.0": {
+        "dependencies": {
+          "Workout.Domain": "1.0.0"
+        },
+        "runtime": {
+          "Workout.Application.dll": {}
+        }
+      },
+      "Workout.Domain/1.0.0": {
+        "runtime": {
+          "Workout.Domain.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Workout.Application/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Workout.Domain/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
