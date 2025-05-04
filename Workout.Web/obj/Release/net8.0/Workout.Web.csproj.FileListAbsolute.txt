@@ -79,6 +79,7 @@ C:\Users\Sam\source\repos\MeetUp\Workout.Web\obj\Release\net8.0\Workout.Web.Gene
 C:\Users\Sam\source\repos\MeetUp\Workout.Web\obj\Release\net8.0\Workout.Web.AssemblyInfoInputs.cache
 C:\Users\Sam\source\repos\MeetUp\Workout.Web\obj\Release\net8.0\Workout.Web.AssemblyInfo.cs
 C:\Users\Sam\source\repos\MeetUp\Workout.Web\obj\Release\net8.0\Workout.Web.csproj.CoreCompileInputs.cache
+C:\Users\Sam\source\repos\MeetUp\Workout.Web\obj\Release\net8.0\Workout.Web.MvcApplicationPartsAssemblyInfo.cs
 C:\Users\Sam\source\repos\MeetUp\Workout.Web\obj\Release\net8.0\Workout.Web.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\Sam\source\repos\MeetUp\Workout.Web\obj\Release\net8.0\Workout.Web.RazorAssemblyInfo.cache
 C:\Users\Sam\source\repos\MeetUp\Workout.Web\obj\Release\net8.0\Workout.Web.RazorAssemblyInfo.cs
@@ -99,4 +100,3 @@ C:\Users\Sam\source\repos\MeetUp\Workout.Web\obj\Release\net8.0\refint\Workout.W
 C:\Users\Sam\source\repos\MeetUp\Workout.Web\obj\Release\net8.0\Workout.Web.pdb
 C:\Users\Sam\source\repos\MeetUp\Workout.Web\obj\Release\net8.0\Workout.Web.genruntimeconfig.cache
 C:\Users\Sam\source\repos\MeetUp\Workout.Web\obj\Release\net8.0\ref\Workout.Web.dll
-C:\Users\Sam\source\repos\MeetUp\Workout.Web\obj\Release\net8.0\Workout.Web.MvcApplicationPartsAssemblyInfo.cs
