@@ -17,3 +17,5 @@
 /.vs/ProjectEvaluation/meetup.projects.v7.bin
 /.vs/MeetUp/FileContentIndex/bc1d21c7-01c1-47d8-a026-f6b844be3c87.vsidx
 /.vs/MeetUp/FileContentIndex
+/Workout.Web/bin/Release/net8.0/appSettings.Production.json
+/.vs/Workout/v17

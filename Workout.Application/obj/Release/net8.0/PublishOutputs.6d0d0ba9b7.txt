@@ -1,0 +1,5 @@
+C:\Users\Sam\source\repos\MeetUp\Workout.Application\bin\Release\net8.0\publish\Workout.Application.dll
+C:\Users\Sam\source\repos\MeetUp\Workout.Application\bin\Release\net8.0\publish\Workout.Application.deps.json
+C:\Users\Sam\source\repos\MeetUp\Workout.Application\bin\Release\net8.0\publish\Workout.Application.pdb
+C:\Users\Sam\source\repos\MeetUp\Workout.Application\bin\Release\net8.0\publish\Workout.Domain.dll
+C:\Users\Sam\source\repos\MeetUp\Workout.Application\bin\Release\net8.0\publish\Workout.Domain.pdb

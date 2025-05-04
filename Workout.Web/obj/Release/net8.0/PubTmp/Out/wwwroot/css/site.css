@@ -1,0 +1,301 @@
+:root {
+    --color-primary-bg: #FFFFFF;
+    --color-secundus_2-bg: #F5F8FA;
+    --color-tertiary-bg: #E8EDF0;
+    --color-quartary-bg: #cfe2ff;
+    --color-primary-text: #333333;
+    --color-border: #DEE2E6;
+    --bs-table-bg: #cfe2ff;
+    --color-standard-blue: #0D6EFD;
+    --color-button-text-light: #FFFFFF;
+    --color-danger-bg: #DC3545; 
+    --color-danger-border: #DC3545;
+    --color-danger-hover-bg: #c82333; 
+    --color-danger-hover-border: #bd2130;
+}
+
+.bg-primus {
+    background-color: var(--color-primary-bg);
+    color: var(--color-primary-text);
+}
+
+.bg-secundus_2 {
+    background-color: var(--color-secundus_2-bg);
+    color: var(--color-primary-text);
+}
+
+.bg-tertius {
+    background-color: var(--color-tertiary-bg);
+    color: var(--color-primary-text);
+}
+
+.bg-quartus {
+    background-color: var(--color-quartary-bg);
+    color: var(--color-primary-text);
+}
+
+.rep-item-controls {
+    display: flex;
+    align-items: center; 
+    gap: 5px;
+    width: 100%;
+}
+
+    .rep-item-controls .difficulty-badge {
+        flex-basis: 50%;
+        height: 100%; 
+        text-align: center;
+        box-sizing: border-box;
+        display: flex; 
+        justify-content: center;
+        align-items: center; 
+        padding: .25em .4em; 
+        line-height: 3; 
+    }
+
+    .rep-item-controls button {
+        flex-basis: 25%;
+        height: 100%;
+    }
+
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+html, body {
+    height: 100%;
+    overflow: hidden;
+}
+.metric-card {
+    height: 100%;
+}
+
+.metric-card h3 {
+    white-space: nowrap; 
+    overflow: hidden; 
+}
+
+.metric-card h5 {
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+}
+
+.btn-standard {
+    background-color: var(--color-standard-blue);
+    color: var(--color-button-text-light);
+    border: 2px solid var(--color-standard-blue); 
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-weight: bold;
+    transition: all 0.2s ease-in-out;
+}
+
+    .btn-standard:hover {
+        background-color: #0b5ed7; 
+        border-color: #0a58ca; 
+        color: var(--color-button-text-light);
+        box-shadow: 0 0 8px rgba(13, 110, 253, 0.4); 
+        cursor: pointer;
+    }
+
+.btn-warning { 
+    background-color: var(--color-danger-bg);
+    color: var(--color-button-text-light);
+    border: 2px solid var(--color-danger-border);
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-weight: bold;
+    transition: all 0.2s ease-in-out;
+}
+
+    .btn-warning:hover {
+        background-color: var(--color-danger-hover-bg);
+        border-color: var(--color-danger-hover-border);
+        color: var(--color-button-text-light); 
+        box-shadow: 0 0 8px rgba(220, 53, 69, 0.4); 
+        cursor: pointer;
+    }
+
+.card-body .d-flex.align-items-center.gap-2 .form-select,
+.card-body .d-flex.align-items-center.gap-2 .btn {
+    height: 2.5rem; 
+    box-sizing: border-box; 
+}
+
+input,
+select,
+textarea {
+    font-size: 16px !important;
+}
+
+.table-primary {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--color-quartary-bg);
+    background-color: var(--color-tertiary-bg);
+    color: var(--color-primary-text);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+    .table-primary thead {
+        background-color: var(--color-tertiary-bg);
+    }
+
+        .table-primary thead th {
+            padding: 12px;
+            font-weight: bold;
+            border-bottom: 1px solid #444457;
+            color: var(--color-primary-text);
+        }
+
+    .table-primary tbody tr:nth-child(even) td {
+        background-color: var(--color-secundus_2-bg);
+    }
+
+    .table-primary tbody tr:nth-child(odd) td {
+        background-color: var(--color-tertiary-bg);
+    }
+
+    .table-primary td {
+        padding: 12px;
+        border-bottom: 1px solid var(--color-quartary-bg);
+    }
+
+.custom-table tbody tr:hover {
+    background-color: var(--color-quartary-bg);
+}
+
+@media (max-width: 767.98px) {
+
+    .metric-card h3 {
+        font-size: 1.4rem; 
+    }
+
+    .metric-card h5 {
+        font-size: 1rem; 
+    }
+}
+
+body {
+    overflow-y: auto;
+}
+
+.sticky-bottom-input {
+    position: sticky;
+    bottom: 0;
+    background: white;
+    padding: 10px 0;
+    border-top: 1px solid #dee2e6;
+}
+
+#messagesList {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    border-radius: 0.375rem;
+}
+
+.list-group-item {
+    margin: 0.2rem;
+    padding: 1rem 1.5rem;
+    background-color: var(--color-quartary-bg);
+    color: var(--color-primary-text);
+    border: 1px solid var(--color-border) !important;
+}
+
+.metric-card {
+    border: 1px solid #dee2e6;
+    transition: all 0.2s;
+}
+
+.difficulty-badge {
+    min-width: 100px;
+    text-align: center;
+    padding: 5px;
+    border-radius: 4px;
+    margin-right: 5px;
+    display: inline-block;
+}
+
+.Warmup {
+    background-color: #0dcaf0;
+    color: white;
+}
+
+.Easy {
+    background-color: #198754;
+    color: white;
+}
+
+.Moderate {
+    background-color: #ffc107;
+    color: black;
+}
+
+.Difficult {
+    background-color: #fd7e14;
+    color: white;
+}
+
+.Extreme {
+    background-color: #dc3545;
+    color: white;
+}
+
+.Failed {
+    background-color: #000000;
+    color: white;
+}
+
+#workoutTimer, #restTimerDisplay {
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+}
+
+#restTimerContainer {
+    min-width: 280px;
+}
+
+.scroll-section {
+    max-height: 50vh;
+    overflow-y: auto;
+    margin-bottom: 15px;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    padding: 10px;
+}
+
+.sticky-bottom-input {
+    position: sticky;
+    bottom: 0;
+    background: white;
+    padding: 10px 0;
+    border-top: 1px solid #dee2e6;
+    z-index: 1;
+}
+
+#historyModal {
+    z-index: 9999;
+}
