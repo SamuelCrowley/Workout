@@ -731,19 +731,19 @@ class GymTracker {
                 const sessionItem = document.createElement('li');
                 sessionItem.className = 'list-group-item d-flex justify-content-between align-items-center';
                 sessionItem.innerHTML = `
-                    <div>
-                        <h5>${session.gymSessionType}</h5>
-                        <div class="txt-primary">
-                            ${new Date(session.startTime).toLocaleDateString()}
-                            ${Math.round(session.durationMinutes)} minutes 
-                            ${session.exerciseCount} exercises 
-                            ${session.totalSets} sets
-                        </div>
+                <div>
+                    <h5>${session.gymSessionType}</h5>
+                    <div class="txt-primary">
+                        ${new Date(session.startTime).toLocaleDateString()}
+                        ${Math.round(session.durationMinutes)} minutes
+                        ${session.exerciseCount} exercises
+                        ${session.totalSets} sets
                     </div>
-                    <div>
-                        ${viewButton}
-                        ${deleteButton}
-                    </div>`;
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    ${viewButton}
+                    ${deleteButton}
+                </div>`;
                 sessionsList.appendChild(sessionItem);
             });
 
