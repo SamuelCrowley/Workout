@@ -776,11 +776,11 @@ class GymTracker {
                 const exerciseCard = document.createElement('div');
                 exerciseCard.className = 'card mb-3';
                 exerciseCard.innerHTML = `
-                    <div class="card-header d-flex justify-content-between align-items-center bg-coal">
+                    <div class="card-header d-flex justify-content-between align-items-center bg-quartus">
                         <h2 class="mb-0">${exercise.name}</h2>
                         ${deleteExerciseButton}
                     </div>
-                    <div class="card-body bg-coal">
+                    <div class="card-body bg-tertius">
                         <ul class="list-group">
                             ${exercise.sets.map(set => {
                                 let deleteSetOnClick = this.getOnClick(deleteSetFromHistoryMethod, set.id);
@@ -871,19 +871,19 @@ class GymTracker {
     }
 
     static getDeleteButton(onClick) {
-        return `<button class="btn btn-red" ${onClick}>
+        return `<button class="btn btn-warning" ${onClick}>
             <i class="bi bi-trash"></i> 
         </button>`;
     }
 
     static getViewButton(onClick) {
-        return `<button class="btn btn-yellow" ${onClick}>
+        return `<button class="btn btn-standard" ${onClick}>
             <i class="bi bi-eye"></i> 
         </button>`;
     }
 
     static getEditButton(onClick) {
-        return `<button class="btn btn-yellow" ${onClick}">
+        return `<button class="btn btn-standard" ${onClick}">
             <i class="bi bi-pencil"></i> 
         </button>`;
     }

@@ -31,7 +31,7 @@ namespace Workout.Web.wwwroot
             string joinerName = GetUserName(user);
 
             _stateService.AddUser(Context.ConnectionId);
-            await Clients.All.SendAsync("ReceiveMessage", "System", $"{joinerName} joined", "#FFFFFF");
+            await Clients.All.SendAsync("ReceiveMessage", "System", $"{joinerName} joined", "#000000");
 
             await base.OnConnectedAsync();
         }
