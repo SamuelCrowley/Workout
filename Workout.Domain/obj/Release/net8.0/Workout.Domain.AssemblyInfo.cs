@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Workout.Domain")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b12ce4a2dda81589bfd6768abfe0f0b126b7352a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+58fb99b15fda683506988d09172dfeaa55e81492")]
 [assembly: System.Reflection.AssemblyProductAttribute("Workout.Domain")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Workout.Domain")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
