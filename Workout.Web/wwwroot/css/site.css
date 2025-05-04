@@ -1,6 +1,6 @@
 :root {
     --color-primary-bg: #FFFFFF;
-    --color-secondary-bg: #F5F8FA;
+    --color-secundus-bg: #F5F8FA;
     --color-tertiary-bg: #E8EDF0;
     --color-quartary-bg: #cfe2ff;
     --color-primary-text: #333333;
@@ -20,7 +20,7 @@
 }
 
 .bg-secundus {
-    background-color: var(--color-secondary-bg);
+    background-color: var(--color-secundus-bg);
     color: var(--color-primary-text);
 }
 
@@ -171,7 +171,7 @@ textarea {
         }
 
     .table-primary tbody tr:nth-child(even) td {
-        background-color: var(--color-secondary-bg);
+        background-color: var(--color-secundus-bg);
     }
 
     .table-primary tbody tr:nth-child(odd) td {

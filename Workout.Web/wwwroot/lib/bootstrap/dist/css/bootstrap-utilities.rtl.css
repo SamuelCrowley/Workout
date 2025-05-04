@@ -1411,8 +1411,8 @@
 }
 
 .bg-secundus {
-  --bs-bg-opacity: 1;
-  background-color: rgba(var(--bs-dark-rgb), var(--bs-bg-opacity)) !important;
+    --bs-bg-opacity: 1;
+    background-color: #F5F8FA, var(--bs-bg-opacity)) !important;
 }
 
 .bg-black {
