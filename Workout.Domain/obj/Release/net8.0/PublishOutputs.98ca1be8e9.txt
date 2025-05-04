@@ -1,0 +1,3 @@
+C:\Users\Sam\source\repos\MeetUp\Workout.Domain\bin\Release\net8.0\publish\Workout.Domain.dll
+C:\Users\Sam\source\repos\MeetUp\Workout.Domain\bin\Release\net8.0\publish\Workout.Domain.deps.json
+C:\Users\Sam\source\repos\MeetUp\Workout.Domain\bin\Release\net8.0\publish\Workout.Domain.pdb
