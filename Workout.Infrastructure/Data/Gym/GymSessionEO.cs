@@ -7,6 +7,7 @@ namespace Workout.Infrastructure.Data.Gym
 {
     public class GymSessionEO : ChildEO, IGymSessionData
     {
+        #region EF navigation
         public ICollection<GymExerciseEO> GymExerciseEOs { get; set; } = new List<GymExerciseEO>();
         [ForeignKey(nameof(ParentRef))]
         public GymUserEO GymUserEO { get; set; }
@@ -14,7 +15,7 @@ namespace Workout.Infrastructure.Data.Gym
         ICollection<IGymExerciseData> IGymSessionData.GymExerciseEOs => 
             GymExerciseEOs.Cast<IGymExerciseData>().ToList();
         IGymUserData IGymSessionData.GymUserEO => GymUserEO;
-
+        #endregion
 
         public override EntityObjectType EOType()
         {
