@@ -633,7 +633,7 @@ class GymTracker {
         const container = document.getElementById("setsTableBody");
         container.innerHTML = "";
         if (exercise.sets.length === 0) {
-            container.innerHTML = '<tr><td colspan="3" class="text-center text-muted">No sets recorded yet</td></tr>';
+            container.innerHTML = '<tr><td colspan="3" class="text-center txt-primary">No sets recorded yet</td></tr>';
             return;
         }
         exercise.sets.forEach((set, index) => {

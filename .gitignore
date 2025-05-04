@@ -89,3 +89,12 @@
 /Workout.Web/obj
 /Workout.Domain/bin/Release/net8.0
 /.vs/Workout/config
+/.vs/Workout/DesignTimeBuild
+/Workout.Domain/obj/Release/net8.0/ref/Workout.Domain.dll
+/Workout.Domain/obj/Release/net8.0/refint/Workout.Domain.dll
+/Workout.Domain/obj/Release/net8.0/Workout.Domain.sourcelink.json
+/Workout.Domain/obj/Release/net8.0/Workout.Domain.dll
+/Workout.Domain/obj/Release/net8.0/Workout.Domain.AssemblyInfo.cs
+/Workout.Domain/obj/Release/net8.0/Workout.Domain.AssemblyInfoInputs.cache
+/Workout.Domain/obj/Release/net8.0/Workout.Domain.pdb
+/.vs/Workout/FileContentIndex/ab5b8cc6-55ae-491e-a18d-a2211e1ec3e7.vsidx

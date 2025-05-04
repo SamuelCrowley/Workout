@@ -356,12 +356,13 @@ namespace Workout.Web.Controllers.Gym
             {
                 GymSessionDTO? mostRecentGymSessionDTO = await _workoutService.GetMostRecentSession();
 
-                if (mostRecentGymSessionDTO == null)
-                {
-                    throw new BadRequestException(FailedToFindGymSession);
-                }
+                // SEC 04-May-2025 - This situation can be hanlded better once a better error manager is implemented
+                //if (mostRecentGymSessionDTO == null)
+                //{
+                //    throw new BadRequestException(FailedToFindGymSession);
+                //}
 
-                if (mostRecentGymSessionDTO.EndTime != null)
+                if (mostRecentGymSessionDTO == null || mostRecentGymSessionDTO.EndTime != null)
                 {
                     return Ok(new { success = true, hasActiveWorkout = false });
                 }
