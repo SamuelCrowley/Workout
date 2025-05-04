@@ -65,7 +65,7 @@ namespace Workout.Web.Controllers.Gym
                         {
                             id = x.ClassRef,
                             name = x.ExerciseName,
-                            sets = x.GymSetDTOs.Select(x => new
+                            sets = x.GymSetDTOs.OrderBy(x => x.StartTime).Select(x => new
                             {
                                 id = x.ClassRef,
                                 reps = x.GymRepetitionDTOs.Select(x => new
