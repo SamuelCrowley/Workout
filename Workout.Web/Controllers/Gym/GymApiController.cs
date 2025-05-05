@@ -1,9 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 using Workout.Application.DTOs.Gym;
 using Workout.Application.Services.Gym;
-using Workout.Web.Exceptions;
 
 namespace Workout.Web.Controllers.Gym
 {
@@ -27,7 +24,7 @@ namespace Workout.Web.Controllers.Gym
 
                 if (gymUser == null)
                 {
-                    throw new BadRequestException(GymUserNotFound);
+                    throw new Exception("Gym user failed to find");
                 }
 
                 var sessions = await _workoutService.GetSessionHistoryByUser(gymUser.ClassRef);
@@ -49,7 +46,7 @@ namespace Workout.Web.Controllers.Gym
 
                 if (gymSessionDTO == null)
                 {
-                    throw new BadRequestException(GymSessionNotFound);
+                    throw new Exception("Gym session failed to find");
                 }
 
                 return Ok(new
@@ -95,14 +92,14 @@ namespace Workout.Web.Controllers.Gym
 
                 if (hasActiveSession)
                 {
-                    return BadRequest("Active workout session already exists for this user");
+                    throw new Exception("Gym user already has active session");
                 }
 
                 GymSessionDTO? newGymSessionDTO = await _workoutService.CreateNewGymSession(workoutName);
 
                 if (newGymSessionDTO == null)
                 {
-                    throw new BadRequestException(FailedToCreateUser);
+                    throw new Exception("Gym session failed to start");
                 }
 
                 return Ok(new
@@ -127,7 +124,7 @@ namespace Workout.Web.Controllers.Gym
 
                 if (gymSessionDTO == null)
                 {
-                    throw new BadRequestException(FailedToEndSession);
+                    throw new Exception("Gym session failed to end");
                 }
 
                 return Ok(new
@@ -151,7 +148,7 @@ namespace Workout.Web.Controllers.Gym
 
                 if (gymExerciseDTO == null)
                 {
-                    throw new BadRequestException(FailedToCreateExercise);
+                    throw new Exception("Gym exercise failed to create");
                 }
 
                 return Ok(new
@@ -176,7 +173,7 @@ namespace Workout.Web.Controllers.Gym
 
                 if (gymSetDTO == null)
                 {
-                    throw new BadRequestException(FailedToCreateSet);
+                    throw new Exception("Gym set failed to create");
                 }
 
                 return Ok(new
@@ -208,7 +205,7 @@ namespace Workout.Web.Controllers.Gym
 
                 if (gymSetDTO == null)
                 {
-                    throw new BadRequestException(FailedToEditSet);
+                    throw new Exception("Gym set failed to edit");
                 }
 
                 return Ok(new
@@ -240,7 +237,7 @@ namespace Workout.Web.Controllers.Gym
 
                 if (gymSessionDTO == null)
                 {
-                    throw new BadRequestException(FailedToDeleteSession);
+                    throw new Exception("Gym session failed to delete");
                 }
                 return Ok(new
                 {
@@ -263,7 +260,7 @@ namespace Workout.Web.Controllers.Gym
 
                 if (gymExerciseDTO == null)
                 {
-                    throw new BadRequestException(FailedToDeleteExercise);
+                    throw new Exception("Gym exercise failed to delete");
                 }
 
                 return Ok(new
@@ -288,7 +285,7 @@ namespace Workout.Web.Controllers.Gym
 
                 if (gymSetDTO == null)
                 {
-                    throw new BadRequestException(FailedToDeleteSet);
+                    throw new Exception("Gym set failed to delete");
                 }
 
                 return Ok(new
@@ -333,7 +330,7 @@ namespace Workout.Web.Controllers.Gym
 
                 if (gymUserDTO == null)
                 {
-                    throw new BadRequestException(FailedToCreateGymUser);
+                    throw new Exception("Gym User unexpectedly not found");
                 }
 
                 return Ok(new
@@ -402,129 +399,53 @@ namespace Workout.Web.Controllers.Gym
             }
         }
 
-        public async Task<GymSessionDTO> GetCurrentGymSession(string sessionId)
+        public async Task<GymSessionDTO?> GetCurrentGymSession(string sessionId)
         {
-            GymSessionDTO? gymSessionEO = await _workoutService.GetGymSessionByClassRef(sessionId);
+            GymSessionDTO? gymSessionDTO = null;
 
-            if (gymSessionEO == null)
+            try
             {
-                throw new BadRequestException(GymSessionNotFound);
+                gymSessionDTO = await _workoutService.GetGymSessionByClassRef(sessionId);
+
+            }
+            catch (Exception ex)
+            {
+                CatchException(ex);
             }
 
-            return gymSessionEO;
+            return gymSessionDTO;
         }
 
-        public async Task<GymExerciseDTO> GetCurrentGymExercise(string exerciseId)
+        public async Task<GymExerciseDTO?> GetCurrentGymExercise(string exerciseId)
         {
-            GymExerciseDTO? gymExerciseDTO = await _workoutService.GetGymExerciseByClassRef(exerciseId);
-
-            if (gymExerciseDTO == null)
+            GymExerciseDTO? gymExerciseDTO = null;
+            try
             {
-                throw new BadRequestException(GymExerciseNotFound);
+                gymExerciseDTO = await _workoutService.GetGymExerciseByClassRef(exerciseId);
+                return gymExerciseDTO;
+            }
+            catch (Exception ex)
+            {
+                CatchException(ex);
             }
 
             return gymExerciseDTO;
         }
 
-        public async Task<GymSetDTO> GetCurrentGymSet(string setId)
+        public async Task<GymSetDTO?> GetCurrentGymSet(string setId)
         {
-            GymSetDTO? gymSetEO = await _workoutService.GetGymSetByClassRef(setId);
+            GymSetDTO? gymSetEO = null;
 
-            if (gymSetEO == null)
+            try
             {
-                throw new BadRequestException(GymSetNotFound);
+                gymSetEO = await _workoutService.GetGymSetByClassRef(setId);
+            }
+            catch (Exception ex)
+            {
+                CatchException(ex);
             }
 
             return gymSetEO;
-        }
-
-        private IActionResult CatchException(Exception ex)
-        {
-            if (ex is APIException)
-            {
-                APIException apiException = ex as APIException;
-                return apiException.GetError();
-            }
-            else
-            {
-                return InternalServerError(ex.Message, ex);
-            }
-        }
-
-        //SEC 03-Mar-2025 - Just use const strings instead and use them to fire BadRequests 
-        public IActionResult ApplicationUserNotFound()
-        {
-            return BadRequest($"Login required");
-        }
-
-        public IActionResult GymUserNotFound()
-        {
-            return BadRequest($"Gym user could not be found for current login");
-        }
-
-        public IActionResult GymSessionNotFound()
-        {
-            return BadRequest("Workout session could not be found");
-        }
-
-        public IActionResult GymExerciseNotFound()
-        {
-            return BadRequest("Exercise could not be found");
-        }
-
-        public IActionResult GymSetNotFound()
-        {
-            return BadRequest("Set could not be found");
-        }
-
-        public IActionResult FailedToCreateUser()
-        {
-            return BadRequest("Failed to create user");
-        }
-
-        public IActionResult FailedToEndSession()
-        {
-            return BadRequest("Failed to end session");
-        }
-
-        public IActionResult FailedToCreateExercise()
-        {
-            return BadRequest("Failed to create exercise");
-        }
-
-        public IActionResult FailedToCreateSet()
-        {
-            return BadRequest("Failed to create set");
-        }
-
-        public IActionResult FailedToEditSet()
-        {
-            return BadRequest("Failed to edit set");
-        }
-
-        public IActionResult FailedToDeleteSession()
-        {
-            return BadRequest("Failed to delete session");
-        }
-
-        public IActionResult FailedToDeleteExercise()
-        {
-            return BadRequest("Failed to delete exercise");
-        }
-
-        public IActionResult FailedToDeleteSet()
-        {
-            return BadRequest("Failed to delete set");
-        }
-
-        public IActionResult FailedToCreateGymUser()
-        {
-            return BadRequest("Failed to create gym user");
-        }
-
-        public IActionResult FailedToFindGymSession()
-        {
-            return BadRequest("Failed to find gym session");
         }
     }
 }
