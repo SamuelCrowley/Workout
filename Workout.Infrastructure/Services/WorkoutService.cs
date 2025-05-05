@@ -11,6 +11,10 @@ using Workout.Infrastructure.Data.User;
 
 namespace Workout.Infrastructure.Services
 {
+    /// <summary>
+    /// SEC 05-May-2025
+    /// Concrete implementation of IWorkoutService from Workout.Application, this is the 'how' of the service, not the 'what'
+    /// </summary>
     public class WorkoutService : IWorkoutService
     {
         private readonly ClaimsPrincipal _user;

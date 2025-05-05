@@ -13,11 +13,14 @@ namespace Workout.Application.DTOs.Gym
         public DateTime? EndTime { get; set; }
 
         public List<GymExerciseDTO> GymExerciseDTOs { get; set; }
+
+        #region Calculated properties
         public int DurationMinutes => EndTime.HasValue ? (int)Math.Round((EndTime.Value - StartTime).TotalMinutes) : 0;
 
         public int ExerciseCount => GymExerciseDTOs?.Count ?? 0;
 
         public int TotalSets => GymExerciseDTOs?.Sum(e => e.GymSetDTOs?.Count ?? 0) ?? 0;
+        #endregion
 
         public GymSessionDTO(IGymSessionData gymSessionEO) : base(gymSessionEO)
         {

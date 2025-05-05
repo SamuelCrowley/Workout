@@ -18,14 +18,11 @@ namespace Workout.Infrastructure.Data.Gym
         {
             return EntityObjectType.GymRepetitionEO;
         }
-       
 
         public float Weight { get; set; }
         public RepetitionDifficulty Difficulty { get; set; }
 
         public int Order { get; set; }
-
-       
 
         public GymRepetitionEO(IBaseDataStructure baseEO) : base(baseEO)
         {

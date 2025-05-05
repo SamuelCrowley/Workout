@@ -1,6 +1,10 @@
 ﻿using Workout.Application.DTOs.Gym;
 namespace Workout.Application.Services.Gym
 {
+    /// <summary>
+    /// SEC 05-May-2025 
+    /// Definition of the service methods, this is the 'what' of the service rather than the 'how', which is handled by the Infrastructure subsystem
+    /// </summary>
     public interface IWorkoutService
     {
         Task<GymUserDTO?> GetGymUserByParentRef(string parentRef);
