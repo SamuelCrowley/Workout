@@ -8,6 +8,7 @@ using Workout.Domain.Enums;
 using Workout.Infrastructure.Data;
 using Workout.Infrastructure.Data.Gym;
 using Workout.Infrastructure.Data.User;
+using Workout.Infrastructure.Exceptions.Concrete;
 
 namespace Workout.Infrastructure.Services
 {
@@ -118,14 +119,14 @@ namespace Workout.Infrastructure.Services
 
             if (applicationUserID == null)
             {
-                return null;
+                throw new BadRequestException("Failed to create new gym session - user does not exist");
             }
 
             GymUserEO? currentGymUserEO = await _context.GymUsers.Where(x => x.ParentRef == applicationUserID).FirstOrDefaultAsync();
 
             if (currentGymUserEO == null)
             {
-                return null;
+                throw new BadRequestException("Failed to create new gym session - gym user does not exist");
             }
 
             GymSessionEO newGymSessionEO = new GymSessionEO(currentGymUserEO)
@@ -144,13 +145,13 @@ namespace Workout.Infrastructure.Services
             GymSessionEO? gymSessionEO = await _context.GymSessions.Where(x => x.ClassRef == gymSessionClassRef).FirstOrDefaultAsync();
 
             if (gymSessionEO == null) 
-            {  
-                return null;
+            {
+                throw new BadRequestException("Failed to end gym session");
             }
 
             if (gymSessionEO.EndTime != null)
             {
-                return null;
+                throw new BadRequestException("Failed to end gym session - already ended");
             }
 
             gymSessionEO.EndTime = DateTime.UtcNow;
@@ -166,7 +167,7 @@ namespace Workout.Infrastructure.Services
 
             if (gymSessionEO == null)
             {
-                return null; // SEC 03-Mar-2025 - Goal is to later implement throwing BadRequest -> Catch in API and then determine if 400 or 500
+                throw new BadRequestException("Failed to create gym exercise");
             }
 
             GymExerciseEO newGymExerciseEO = new GymExerciseEO(gymSessionEO)
@@ -186,7 +187,7 @@ namespace Workout.Infrastructure.Services
 
             if (gymExerciseEO == null)
             {
-                return null;
+                throw new BadRequestException("Failed to create gym set");
             }
 
             GymSetEO gymSetEO = new GymSetEO(gymExerciseEO)
@@ -220,7 +221,7 @@ namespace Workout.Infrastructure.Services
 
             if (gymSetEO == null)
             {
-                return null;
+                throw new BadRequestException("Failed to edit gym set");
             }
 
             gymSetEO.GymRepetitionEOs.Clear();
@@ -249,7 +250,7 @@ namespace Workout.Infrastructure.Services
 
             if (gymSessionEO == null)
             {
-                return null;
+                throw new BadRequestException("Failed to delete gym session");
             }
 
             _context.GymSessions.Remove(gymSessionEO); // SEC 27-04-2025 - No async version, Remove just marks for deletion in EF 
@@ -264,7 +265,7 @@ namespace Workout.Infrastructure.Services
 
             if (gymExerciseEO == null)
             {
-                return null;
+                throw new BadRequestException("Failed to delete gym exercise");
             }
 
             _context.GymExercises.Remove(gymExerciseEO); // SEC 27-04-2025 - No async version, Remove just marks for deletion in EF 
@@ -279,7 +280,7 @@ namespace Workout.Infrastructure.Services
 
             if (gymSetEO == null)
             {
-                return null;
+                throw new BadRequestException("Failed to find gym set");
             }
 
             _context.GymSets.Remove(gymSetEO); // SEC 27-04-2025 - No async version, Remove just marks for deletion in EF 
@@ -308,7 +309,7 @@ namespace Workout.Infrastructure.Services
             bool alreadyExists = await _context.GymUsers.AnyAsync(x => x.ParentRef == userId);
             if (alreadyExists)
             {
-                return null;
+                throw new BadRequestException("Failed to create user");
             }
 
             ApplicationUserEOWrapper applicationUserEOWrapper = new ApplicationUserEOWrapper(applicationUserEO);
@@ -330,7 +331,7 @@ namespace Workout.Infrastructure.Services
 
             if (applicationUserID == null)
             {
-                return null;
+                throw new BadRequestException("Failed to find user");
             }
 
             GymUserEO? currentGymUserEO = await _context.GymUsers.Where(x => x.ParentRef == applicationUserID)
@@ -342,14 +343,14 @@ namespace Workout.Infrastructure.Services
 
             if (currentGymUserEO == null)
             {
-                return null;
+                throw new BadRequestException("Failed to find current gym user");
             }
 
             GymSessionEO? mostRecentGymSessionEO = currentGymUserEO.GymSessionEOs.OrderByDescending(x => x.EndTime ?? DateTime.MaxValue).FirstOrDefault();
 
             if (mostRecentGymSessionEO == null)
             {
-                return null;
+                throw new BadRequestException("Failed to find most recent gym session");
             }
 
             return new GymSessionDTO(mostRecentGymSessionEO);

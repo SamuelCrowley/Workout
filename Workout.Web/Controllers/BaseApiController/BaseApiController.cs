@@ -1,26 +1,34 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Workout.Application.Exceptions.Interfaces;
 
 namespace Workout.Web.Controllers
 {
     public class BaseApiController : ControllerBase
     {
-        protected IActionResult InternalServerError(string message, Exception ex)
+        protected IActionResult APIError(IAPIException exception)
         {
-            return StatusCode(500, new
+            return StatusCode(exception.ExceptionNumber, new
             {
                 success = false,
-                message,
-                error = ex.Message
+                exception.Message
             });
         }
 
-        protected IActionResult BadRequest(string message)
-        { 
-            return StatusCode(400, new
+        protected IActionResult CatchException(Exception ex)
+        {
+            if (ex is IAPIException)
             {
-                success = false,
-                message
-            });
+                IAPIException exception = (IAPIException)ex;
+                return APIError(exception);
+            }
+            else
+            {
+                return StatusCode(500, new
+                {
+                    success = false,
+                    ex.Message
+                });
+            }
         }
     }
 }

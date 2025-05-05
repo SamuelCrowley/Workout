@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
-using Workout.Infrastructure.Exceptions;
+using Workout.Application.Exceptions.Interfaces;
 
 namespace Workout.Web.Filters
 {
@@ -10,7 +10,7 @@ namespace Workout.Web.Filters
         {
             var exception = context.Exception;
 
-            if (exception is APIException apiEx)
+            if (exception is IAPIException apiEx)
             {
                 context.Result = new ObjectResult(new
                 {
