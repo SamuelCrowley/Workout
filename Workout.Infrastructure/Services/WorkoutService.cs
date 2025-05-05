@@ -341,19 +341,9 @@ namespace Workout.Infrastructure.Services
                                                                  .ThenInclude(x => x.GymRepetitionEOs)
                                                                  .FirstOrDefaultAsync();
 
-            if (currentGymUserEO == null)
-            {
-                throw new BadRequestException("Failed to find current gym user");
-            }
+            GymSessionEO? mostRecentGymSessionEO = currentGymUserEO?.GymSessionEOs.OrderByDescending(x => x.EndTime ?? DateTime.MaxValue).FirstOrDefault();
 
-            GymSessionEO? mostRecentGymSessionEO = currentGymUserEO.GymSessionEOs.OrderByDescending(x => x.EndTime ?? DateTime.MaxValue).FirstOrDefault();
-
-            if (mostRecentGymSessionEO == null)
-            {
-                throw new BadRequestException("Failed to find most recent gym session");
-            }
-
-            return new GymSessionDTO(mostRecentGymSessionEO);
+            return mostRecentGymSessionEO == null ? null : new GymSessionDTO(mostRecentGymSessionEO);
         }
     }
 }
