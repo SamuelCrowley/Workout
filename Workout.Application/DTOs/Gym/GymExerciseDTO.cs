@@ -1,5 +1,4 @@
 ﻿using Workout.Application.DTOs.Base;
-using Workout.Domain.Data.Base.Interfaces;
 using Workout.Domain.Data.Interfaces.Gym;
 using Workout.Domain.Enums;
 

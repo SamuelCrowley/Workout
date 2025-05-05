@@ -1,5 +1,4 @@
-﻿using Workout.Domain.Data.Base.AbstractClasses;
-using Workout.Domain.Data.Base.Interfaces;
+﻿using Workout.Domain.Data.Base.Interfaces;
 using Workout.Domain.Enums;
 
 namespace Workout.Application.DTOs.Base

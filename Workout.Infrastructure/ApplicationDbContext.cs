@@ -8,6 +8,12 @@ using Workout.Infrastructure.Data.Gym;
 
 namespace Workout.Infrastructure.Data;
 
+/// <summary>
+/// SEC 05-May-2025
+/// This is fundamentally what sets up the database for EF core (using the Update-Database command)
+/// This uses the EO objects in Infrastructure to build the database, which are the concrete implementations of the data structure
+/// defined in the domain subsystem via the Data interfaces
+/// </summary>
 public class ApplicationDbContext : IdentityDbContext<ApplicationUserEO>
 {
     public DbSet<GymUserEO> GymUsers { get; set; }

@@ -7,8 +7,10 @@ namespace Workout.Infrastructure.Data.User
 {
     public class ApplicationUserEO : IdentityUser, IApplicationUserEO
     {
+        #region EF navigation
         public GymUserEO GymUserEO { get; set; } 
         IGymUserData IApplicationUserEO.GymUserEO => GymUserEO;
+        #endregion
 
 
         [ProtectedPersonalData] // SEC 25-Apr-2025 - Users frequently put protected personal data inside nicknames/aliases 

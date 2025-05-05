@@ -26,7 +26,6 @@ namespace Workout.Infrastructure.Data.Gym
         public DateTime StartTime { get; set; }
         public DateTime? EndTime { get; set; }
 
-
         public GymSessionEO(GymUserEO gymUserEO) : base(gymUserEO)
         {
             StartTime = DateTime.UtcNow;
