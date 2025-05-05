@@ -278,3 +278,4 @@
 /Workout.Web/obj/Debug/net8.0/Workout.Web.assets.cache
 /Workout.Web/obj/Debug/net8.0/Workout.Web.csproj.AssemblyReference.cache
 /Workout.Web/obj/Debug/net8.0/Workout.Web.GeneratedMSBuildEditorConfig.editorconfig
+/Workout.Web/appSettings.Production.json
